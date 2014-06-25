@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>progrium :: Jeff Lindsay</title>
+  <subtitle>Pragmatic idealist. Thought explorer.</subtitle>
+  <id>http://progrium.com/blog</id>
+  <link href="http://progrium.com/blog"/>
+  <link href="http://progrium.com/blog/atom.xml" rel="self"/>
+  <updated>2014-02-05T18:00:00-06:00</updated>
+  <author>
+    <name>Jeff Lindsay</name>
+    <email>progrium+feed@gmail.com</email>
+  </author>
+  <entry>
+    <title>The Start of the Age of Flynn</title>
+    <link rel="alternate" href="http://progrium.com/blog/2014/02/06/the-start-of-the-age-of-flynn/"/>
+    <id>http://progrium.com/blog/2014/02/06/the-start-of-the-age-of-flynn/</id>
+    <published>2014-02-05T18:00:00-06:00</published>
+    <updated>2014-06-24T23:19:06-05:00</updated>
+    <author>
+      <name>Jeff Lindsay</name>
+    </author>
+    <content type="html">&lt;p&gt;For about the past six months, I've been working on an open source project called &lt;a href="https://flynn.io/"&gt;Flynn&lt;/a&gt;. It's gotten a lot of attention, but I haven't written much about it. I've been hoping to start a series discussing the design and development behind Flynn, but it seems appropriate to at least introduce the project and provide some context. &lt;/p&gt;
+
+&lt;h2 id="what-is-flynn"&gt;What is Flynn?&lt;/h2&gt;
+
+&lt;p&gt;Before development, I started writing the official &lt;a href="https://github.com/flynn/flynn-guide"&gt;Flynn Guide&lt;/a&gt;. There I explained Flynn like this:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Flynn has been marketed as an open source Heroku-like Platform as a Service (PaaS), however the real answer is more subtle. Flynn is two things:
+&lt;br /&gt;&lt;br /&gt; 
+1) a "distribution" of components that out-of-the-box gives companies a reasonable starting point for an internal "platform" for running their applications and services,
+&lt;br /&gt;&lt;br /&gt;
+2) the banner for a collection of independent projects that together make up a toolkit or loose framework for building distributed systems.
+&lt;br /&gt;&lt;br /&gt;
+Flynn is both a whole and many parts, depending on what is most useful for you. The common goal is to democratize years of experience and best practices in building distributed systems. It is the software layer between operators and developers that makes both their lives easier.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It's easy right now to describe Flynn as another, better, modern open source PaaS. But it's really much more than that. I usually need to underline this in discussions because in most people's mind, a PaaS is a black box system that you deploy and configure and then you have something like Heroku. Like you can deploy OpenStack Nova and get something like EC2. &lt;/p&gt;
+
+&lt;p&gt;Flynn can be that, but it's designed so it can be used as an open system, or framework, to build a service-oriented application operating environment. The truth is, if you're building and operating any sort of software as a service, you're not just building an application, you're building a &lt;em&gt;system&lt;/em&gt; to support your application and the processes around it.&lt;/p&gt;
+
+&lt;p&gt;You might be tempted to call Flynn a tool for "devops". While that might be true, remember that the original ideas around devops were about organization-wide systemic understanding of your application, its lifecycle, and its operation. In reality, Flynn is designed for this type of thinking and should hopefully blur the line between operations and engineering, encouraging both to work together and think about the &lt;em&gt;entire&lt;/em&gt; system you're building.&lt;/p&gt;
+
+&lt;h2 id="why-build-flynn-how-did-it-come-about"&gt;Why build Flynn, how did it come about?&lt;/h2&gt;
+
+&lt;p&gt;This is a long story, but it provides context for the vision of Flynn, what problems inspired it, and shows just how long the idea has been stirring. Though keep in mind Flynn is a collaboration and this is just my half of the story.&lt;/p&gt;
+
+&lt;h3 id="falling-in-love-with-paas"&gt;Falling in love with PaaS&lt;/h3&gt;
+
+&lt;p&gt;For years I was obsessed with improving the usefulness and programmability of our collective macro distributed system of web services and APIs. Think webhooks. Circa 2006 I was also building lots of little standalone web utilities and APIs for fun. I quickly learned that using technologies like App Engine and Heroku was imperative to sanely operate so many of these free services, and keep costs near zero for what I considered public utilities. &lt;/p&gt;
+
+&lt;p&gt;It turns out, for the exact same reasons of cost and automation, these PaaS providers were slowly revolutionizing a subset of commercial application development. The idea of generic managed applications ("NoOps") and streamlining the delivery pipeline (necessary for Continuous Delivery) has always had huge implications for web apps and their businesses. For me, even though PaaS providers couldn't have come soon enough, I seemed to always want more than what they could provide. I constantly struggled with the limitations of App Engine, Heroku, and dotCloud. Originally it was limited to certain languages, certain types of computation, certain types of protocols. In fact, there still isn't a great PaaS provider that lets you build or deploy a non-HTTP service, like say, an SMTP server or custom SSH server. &lt;/p&gt;
+
+&lt;h3 id="the-divide-between-paas-and-host-based-infrastructure"&gt;The divide between PaaS and host-based infrastructure&lt;/h3&gt;
+
+&lt;p&gt;For all the systems and design knowledge, best practices, and solutions to important problems that Heroku, dotCloud, App Engine, and others have figured out, if for some reason you cannot use them, you get none if it. If it's too expensive, or your system is just too complicated, or you need to use a protocol they don't support, you just get EC2 or bare metal hosts and have to work from there. If you're lucky or smart, depending on who makes these decisions, you get to use Chef or Puppet. &lt;/p&gt;
+
+&lt;p&gt;But I'll be honest, the Chef and EC2 combo is still a huge step down from what a system like Heroku can offer. What's more is that large scale organizations like Google and Twitter have it pretty well figured out, but they have it figured out for them. The rest of us are left with a myriad of powerful if not mystical solutions to building our distributed systems like Mesos and Zookeeper. If we're lucky enough to discover and understand those projects, we often avoid them until absolutely necessary and only then figure out how to integrate them into our already complex systems. Most of which we had to build ourselves because the baseline starting point has always been "a Linux server". &lt;/p&gt;
+
+&lt;h3 id="twilio-and-service-oriented-architectures"&gt;Twilio and service-oriented architectures&lt;/h3&gt;
+
+&lt;p&gt;For me, a lot of this was learned at &lt;a href="https://www.twilio.com/"&gt;Twilio&lt;/a&gt;, which was a perfect place to think about this space. The Twilio system, behind that wonderfully simple API, is a highly complex service-oriented system. When I left a couple years ago, it involved roughly 200 different types of services to operate. Some were off-the-shelf open source services, like databases or caches. Most of them were custom services that spoke to each other. Some were written in Python, some in PHP, some in Java, others in C. Lots of protocols were used, both internally and publicly facing. Primarily HTTP, but also SIP, RTP, custom TCP protocols, even a little ZeroMQ. Most people forget that databases also add protocols to the list.&lt;/p&gt;
+
+&lt;p&gt;I can't tell you how many problems come with a system that complicated. Though it did its job quite well, the system was effectively untestable, had an atrocious delivery pipeline, was incredibly inefficient in terms of EC2 instances, and nobody really understood the whole system. A lot of these are common problems, but they're compounded by the scale and complexity of the system. &lt;/p&gt;
+
+&lt;p&gt;The first half my time at Twilio was spent building scalable, distributed, highly-available messaging infrastructure. What a great way to learn distributed systems. However, I ran into so many problems and was so frustrated by the rest of the system, that I dedicated the second half of my time at Twilio to improving the infrastructure and helped form the Platform team. The idea being that we were to provide a service platform for the rest of the engineering organization to use. Unfortunately it never really became more than a glorified operations and systems engineering team, but we did briefly get the chance to really think through the ideal system. If we could build an ideal internal platform, what would it look like? We knew it looked a lot like Heroku, but we needed more. What we ended up with looked a lot like Flynn. But it never got started. &lt;/p&gt;
+
+&lt;p&gt;I remember very clearly working out sketches for a primitive that I thought was central to the whole system. It was a "dyno manager" to me, which gave you a utility to manage the equivalent of Heroku dynos on a single host. These were basically fancy Linux containers. Again, though, not important to Twilio at the time. Eventually, I left Twilio and started contracting.&lt;/p&gt;
+
+&lt;h3 id="more-history-with-cloud-infrastructure"&gt;More history with cloud infrastructure&lt;/h3&gt;
+
+&lt;p&gt;First, I worked with some old friends back from the &lt;a href="http://bit.ly/1fBtien"&gt;NASA Nebula&lt;/a&gt; days. I forgot to mention, in 2009, before Twilio, I worked at NASA building open source cloud infrastructure. The plan was to implement an EC2, then a sort of App Engine on top of it, and then specifically for purposes at NASA, lots of high level application modules. Turns out the first part was hard enough. We started using Eucalyptus, but realized it was not going to cut it. Eventually the team wrote their own version from what they learned using Eucalyptus, called it Nova, partnered with Rackspace, and that's how &lt;a href="https://www.openstack.org/"&gt;OpenStack&lt;/a&gt; was born.&lt;/p&gt;
+
+&lt;p&gt;I was on the project pre-OpenStack to actually work on the open source PaaS back then in 2009, but we never got to that before I left. Probably for the best in terms of timing. Another reason I was there was because we also wanted to provide project hosting infrastructure at NASA. This was before Github was popular, and in fact, I was running a competing startup called DevjaVu since 2006 that productized Trac and SVN. As Github got more popular and I was distracted with other projects, I decided to shutdown DevjaVu, admitting that Github was doing it right. But my experience meant I could easily throw together what was originally going to be code.nasa.gov. &lt;/p&gt;
+
+&lt;p&gt;Fast forward to my contracting after Twilio, I worked with my friends at &lt;a href="http://www.pistoncloud.com/"&gt;Piston Cloud&lt;/a&gt;, one of the OpenStack startups that fell out of the NASA Nebula project. My task wasn't OpenStack related, it was actually to automate the deployment of &lt;a href="http://www.cloudfoundry.com/"&gt;CloudFoundry&lt;/a&gt; on top of OpenStack for a client. CloudFoundry was one of the first open source PaaS projects. It popped up in 2011. This gave me a taste of CloudFoundry, and boy it was a bad one. Ignoring anything about CloudFoundry itself, just deploying it from scratch, while 100% automated, would take 2 &lt;em&gt;hours&lt;/em&gt; to complete. Nevertheless, there are still some aspects of the project I admire.&lt;/p&gt;
+
+&lt;h3 id="docker-and-dokku"&gt;Docker and Dokku&lt;/h3&gt;
+
+&lt;p&gt;My next big client turned out to be an old user of DevjaVu, but I never realized it until I started talking with them. It was a company called dotCloud. Quickly hitting it off with Solomon Hykes, we tried to find a project to collaborate on. I mentioned my "dyno manager" concept, and he brought up their next-gen container technology. Soon I was working on a prototype called &lt;a href="http://www.docker.io/"&gt;Docker&lt;/a&gt;. &lt;/p&gt;
+
+&lt;p&gt;While the final project was mostly a product of the mind of Solomon and the team, while working on the prototype I made sure that it could be used for the systems I was envisioning. In my mind it was just one piece of a larger system, though a very powerful piece with many other uses and applications. Solomon and I knew this, and would often say it was the next big thing, but it's still a bit crazy to see that it's turning out to be true.&lt;/p&gt;
+
+&lt;p&gt;Not long after Docker was released, Solomon and I went to give a talk at GlueCon to preach this great new truth. The day before the talk, I spent 6 hours hacking together a demo for the talk that would demonstrate how you could "easily" build a PaaS with Docker. I later released this as &lt;a href="https://github.com/progrium/dokku"&gt;Dokku&lt;/a&gt;, a Docker powered mini-Heroku.&lt;/p&gt;
+
+&lt;p&gt;Dokku intentionally left out anything having to do with distributed systems. It was meant for a single host. I thought maybe it would be good for personal use or for building internal tools. Turns it was, and it got pretty popular. I had a note in the readme that said it intentionally does not scale to multiple hosts, and that perhaps this could be done as a separate project that I referred to as "Super Dokku". That's what I imagined Flynn as at the time.&lt;/p&gt;
+
+&lt;h3 id="flynn-takes-shape"&gt;Flynn takes shape&lt;/h3&gt;
+
+&lt;p&gt;Now, back around the time I was working on the Docker prototype in Winter 2012, I was approached by two guys, Daniel Siders and Jonathan Rudenberg, that had been working on the Tent protocol and its reference implementation. They wanted to build a fully distributed, enterprise grade, open source platform service. They said they were going to be working on it soon, and they wanted to work on it with me. The only problem is they didn't have the money, and they'd get back to me after a few funding meetings.&lt;/p&gt;
+
+&lt;p&gt;Later, I think around the time I released Dokku mid-2013, Daniel and Jonathan approached me again. They were serious about this platform service project and had the idea to crowdfund it with company sponsorships. You'd think I'd be rather dubious about the idea, but given the growing interest in Docker, the great response from Dokku, and basically testimonial after testimonial of companies wanting something like this, I figured it could work.&lt;/p&gt;
+
+&lt;p&gt;We decided to call the project Flynn, and got to work comparing notes and remote whiteboarding the project. I was very lucky that they were very like-minded, and we were already thinking of very similar architectures and would generally agree on approaches. We put together the Flynn Guide and the website copy and funding campaign using &lt;a href="http://selfstarter.us/"&gt;Selfstarter&lt;/a&gt;, then let it loose. &lt;/p&gt;
+
+&lt;p&gt;We quickly met our funding goal for the year and then spent the rest of the year working on Flynn. Unfortunately, the budget only covered part-time, but we had planned to have a working development release by January 2014.&lt;/p&gt;
+
+&lt;h2 id="what-now"&gt;What now?&lt;/h2&gt;
+
+&lt;p&gt;It's now February 2014, so let's take a look at where we are. &lt;/p&gt;
+
+&lt;p&gt;Like most software schedules, ours fell behind a little. While the project has been in the open on Github from the beginning, we planned to share a rough but usable developer release last month. We're &lt;em&gt;so&lt;/em&gt; close. &lt;/p&gt;
+
+&lt;p&gt;What makes it difficult is we're out of our 2013 budget! This affects my contribution more than Jonathan's. I've been putting time into it here and there, but it no longer pays my bills. That could change soon, but until then it might move a little bit slower until our initial release. Only after the release can we can go for another sponsorship campaign, so you can see how right now is just a little frustrating.&lt;/p&gt;
+
+&lt;p&gt;That said, there's still more and more interest in the project, we already have a few brave souls that have been contributing to the project components, and like I said, hopefully the money situation will sort itself out soon. A few things are in the works. &lt;/p&gt;
+
+&lt;p&gt;In the meantime, although I'm not as active on it at this moment, I do feel compelled to use this time to write about it here on my blog. Hopefully catch everybody up on the architecture, discuss design decisions, talk about the future, and then a lot of that should be useable for official project documentation.&lt;/p&gt;
+
+&lt;p&gt;And hell, if I can't work on Flynn for some reason, after all this, hopefully the writing will allow somebody to continue my work. :)&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Viewdocs: Hosted Markdown project documentation (finally!)</title>
+    <link rel="alternate" href="http://progrium.com/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation/"/>
+    <id>http://progrium.com/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation/</id>
+    <published>2013-11-12T18:00:00-06:00</published>
+    <updated>2014-06-24T15:41:44-05:00</updated>
+    <author>
+      <name>Jeff Lindsay</name>
+    </author>
+    <content type="html">&lt;p&gt;A huge part of the user experience for open source software is the documentation. When writing new software to be adopted, I've learned it's more important to first write decent docs than tests. And when I forget, &lt;a href="https://github.com/kennethreitz"&gt;Kenneth Reitz&lt;/a&gt; is there to remind me. &lt;/p&gt;
+
+&lt;p&gt;When I've outgrown a README on Github, I only consider two options for providing documentation: &lt;a href="http://pages.github.com/"&gt;Github Pages&lt;/a&gt; and &lt;a href="https://readthedocs.org/"&gt;Read the Docs&lt;/a&gt;. Unfortunately, I have problems with both of them. Chiefly, Read the Docs makes me use reStructured Text, and Github Pages means maintaining a separate orphan branch and using a static page generator. &lt;/p&gt;
+
+&lt;p&gt;What I've really wanted is something like &lt;a href="http://gist.io/"&gt;Gist.io&lt;/a&gt;, but for my repository. Nobody has stepped up, so I built it. &lt;/p&gt;
+
+&lt;p&gt;I call it &lt;a href="http://progrium.viewdocs.io/viewdocs"&gt;Viewdocs&lt;/a&gt;. It renders static pages on-demand from Markdown in your project's docs directory. There's no setup, just follow the conventions and it works. It may even already be working for you, since Markdown in a docs directory is not that uncommon. And keeping your documentation in the same branch as your code means it's easier for people to contribute docs with their pull requests. &lt;/p&gt;
+
+&lt;p&gt;The default layout is borrowed from Gist.io, giving you a clean, elegant documentation site. All you have to do is write some Markdown. That's about all there is to it. &lt;/p&gt;
+
+&lt;p&gt;You can read more on the &lt;a href="http://progrium.viewdocs.io/viewdocs"&gt;homepage for Viewdocs&lt;/a&gt;, which is powered by Viewdocs. Or here's a quick video introduction:&lt;/p&gt;
+
+&lt;iframe src="http://player.vimeo.com/video/79066808" width="700" height="394" frameborder="0" webkitallowfullscreen="webkitAllowFullScreen" mozallowfullscreen="mozallowfullscreen" allowfullscreen="allowFullScreen"&gt;No iFrames?&lt;/iframe&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Hacker Dojo: Community Trading Zone</title>
+    <link rel="alternate" href="http://progrium.com/blog/2013/08/18/hacker-dojo-community-trading-zone/"/>
+    <id>http://progrium.com/blog/2013/08/18/hacker-dojo-community-trading-zone/</id>
+    <published>2013-08-17T19:00:00-05:00</published>
+    <updated>2014-06-24T15:41:44-05:00</updated>
+    <author>
+      <name>Jeff Lindsay</name>
+    </author>
+    <content type="html">&lt;p&gt;I recently came out of a Hacker Dojo board meeting, as I do every month, but this time with a renewed sense of excitement for Hacker Dojo. We began with the usual board meeting stuff — finances, staff benefits, etc — but there was one final item to discuss that's more in tune with the reason I'm even on the board. There has been an increasingly pressing issue around what Hacker Dojo is. We used to know what it was and had a reasonable idea of what we always wanted it to be, but we've grown, we've learned, and our model has to adapt. This discussion led to a rethinking of the conceptual structure of Hacker Dojo.&lt;/p&gt;
+
+&lt;p&gt;One of the reasons this came up is growth. We've had consistent membership growth with only a couple expected downturns, due to various setbacks. For example, when we were temporarily limited to a maximum occupancy of 49 people, membership dropped because people couldn't throw the same events as before. Despite setbacks, we've had impressive long-term growth. If you describe us as a "hackerspace," we are the largest in the United Sates, and I believe one of the largest in the world. It's clear that overall we're doing quite well, but we want to take it further. We want to keep pushing because Hacker Dojo means a lot to all of us and we want to see it, and the culture and ideals that go with it, reach new people and new places. &lt;/p&gt;
+
+&lt;p&gt;We've always talked about franchising and starting new locations, but we've learned that a single, 24/7 location with 400 members and around 2,000 people coming through every month is quite difficult to run, especially as a bootstrapped non-profit with minimal staff. We've had sponsorships, but we work hard for those sponsorships and provide services to receive them. Most of our income comes from membership fees. Despite all this we're trying our best to continue to take Hacker Dojo to the next level, and it should be noted we have been quite successful so far, for many reasons that could go into another long blog post.&lt;/p&gt;
+
+&lt;p&gt;Scaling any organization is hard. Scaling an organization like this one can be extra difficult, especially when we're trying to maintain the grassroots, bottom-up, culture that started it. We've always tried to support the concept of a democratic organization. For the first few years we were 100% volunteer run, with no paid employees. The growth of Hacker Dojo has generated lot of extra work to get done that nobody really wants to do. Raising money, working with the city, organizing contractors, dealing with financial issues, having to move to a new location and rent the previous one … all this requires a LOT of leg work and consistent attention that just wasn't happening with volunteers. &lt;/p&gt;
+
+&lt;p&gt;Eventually, you need to start hiring full or part-time people. We now have a small staff of paid employees who tackle these more time-intensive tasks. While this has helped us manage the growth, it has created a kind of interesting tension between the forces of the democratic, bottom-up nature of our organization and the forces of more traditional, more centralized modes of operation necessary for efficient execution of a vision. The vision being in the short-term to improve the quality of the experience at Hacker Dojo, and in the long-term to bring Hacker Dojo and all that it stands for — what some have called the epitome of true Silicon Valley culture — to more people. &lt;/p&gt;
+
+&lt;p&gt;This tension has been healthy and has helped Hacker Dojo often reap the benefits of both worlds. However, as we grow, so does the tension and discussion around it. This was the catalyst for our discussion at the board meeting. Now the realization I'm excited about is somewhat of an aside from this issue of tension, but the issue was the catalyst for revisiting what Hacker Dojo is. I quite enjoy the occasional existential crisis as it often results in refreshed sense of purpose and meaning. &lt;/p&gt;
+
+&lt;p&gt;We revisited many ideas, for example that Hacker Dojo is a platform, and like many platforms it can be hard to describe. We serve purposes in the worlds of education, business, social, and many others. We'd talked about how Hacker Dojo has played a part in not just projects and startups, but relationships — partnerships, friendships, and even marriages. We considered different organizations for analogy: universities, incubators, fraternities, and anything else that comes close to an existing framework for all the amazingness that Hacker Dojo produces. &lt;/p&gt;
+
+&lt;p&gt;Then it hit us. Communities. Plural. &lt;/p&gt;
+
+&lt;p&gt;What we realized is that we've effectively been treating Hacker Dojo as one community. We've sort of acknowledged that there are sub-groups within Hacker Dojo, but we've more or less operated under the assumption that we serve two types of citizens: members and the general public. As we've gotten larger, it's become much more difficult to effectively treat either of those as one group. The reality is that they are all actually part of many communities. &lt;/p&gt;
+
+&lt;p&gt;The idea was right under our nose the whole time, just under a different guise. Events have always been a core part of Hacker Dojo because Hacker Dojo started with the idea that it could be a place where people could meet and host events like the event that inspired Hacker Dojo itself, SuperHappyDevHouse. When an event happens on a regular basis it turns into a community. A group of people with a common interest and/or set of values come together, turn into a community, and these communities grow, develop, and spawn really interesting things, just as SuperHappyDevHouse spawned Hacker Dojo. &lt;/p&gt;
+
+&lt;p&gt;Hacker Dojo now serves many communities both inside and outside of Hacker Dojo; not only internal communities but external ones as well. External communities can also leverage the infrastructure that Hacker Dojo provides. These communities might already have a member of Hacker Dojo, or someone in the community chooses to become a member of Hacker Dojo, usually to throw an event. Once that community gets into Hacker Dojo, they not only see Hacker Dojo, but all the other communities that come together under our roof. Sometimes this inspires even more people to sign up as members, not just to be a part of Hacker Dojo, but to participate in and see what other communities Hacker Dojo offers.&lt;/p&gt;
+
+&lt;p&gt;We're now thinking of Hacker Dojo not just as a community hub, but as a hub of communities. A community &lt;a href="http://en.wikipedia.org/wiki/Trading_zones"&gt;trading zone&lt;/a&gt;, if you will. While we will always support and listen to individual members, we should begin to think of communities, in the plural, as first-class citizens of Hacker Dojo. This may seem like a subtle change but it is a big difference. It means acknowledging and supporting the communities that operate in and around Hacker Dojo. It means going to those communities and asking how we can better serve &lt;em&gt;them as a community&lt;/em&gt;, not just individual members.&lt;/p&gt;
+
+&lt;p&gt;By connecting with communities we can provide infrastructure to foster their growth and development. Imagine going to the Hacker Dojo website and seeing a page devoted to the many communities of Hacker Dojo. When a new member signs up they could indicate their interests and we could provide them with a list of communities they might be interested in. Hacker Dojo would in a sense then be improving the communities' "deal flow."&lt;/p&gt;
+
+&lt;p&gt;Rethinking Hacker Dojo as infrastructure for communities has led to lots of exciting new ideas. By focusing on empowering them with infrastructure that allows them to flourish, we are then supporting our members in a more meaningful way. &lt;/p&gt;
+
+&lt;p&gt;I'm hoping this simple change in the way the board and members invested in Hacker Dojo think about Hacker Dojo will hopefully lead to lots of positive change. We don't have these conversations very often on the board but we need to have them to maintain the vision of Hacker Dojo and we need to have them in public. Clearly this is a collaborative effort, so we want to know how the general community feels about this idea. So I'm putting this out there, and hopefully it will lead to more exciting discussions.&lt;/p&gt;
+
+</content>
+  </entry>
+  <entry>
+    <title>Dokku: The smallest PaaS implementation you've ever seen</title>
+    <link rel="alternate" href="http://progrium.com/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen/"/>
+    <id>http://progrium.com/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen/</id>
+    <published>2013-06-18T19:00:00-05:00</published>
+    <updated>2014-06-24T15:41:44-05:00</updated>
+    <author>
+      <name>Jeff Lindsay</name>
+    </author>
+    <content type="html">&lt;p&gt;&lt;a href="https://github.com/progrium/dokku"&gt;Dokku&lt;/a&gt; is a mini-Heroku powered by Docker written in less than 100 lines of Bash. Once it's set up on a host, you can push Heroku-compatible applications to it via Git. They'll build using Heroku buildpacks and then run in isolated containers. The end result is your own, single-host version of Heroku.&lt;/p&gt;
+
+&lt;p&gt;Dokku is under 100 lines because it's built out of several components that do most of the heavy lifting: Docker, Buildstep, and gitreceive.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="http://www.docker.io/"&gt;Docker&lt;/a&gt; is a container runtime for Linux. This is a high-level container primitive that gives you a similar technology to what powers Heroku Dynos. It provides the heart of Dokku. &lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://github.com/progrium/buildstep"&gt;Buildstep&lt;/a&gt; uses Heroku's open source buildpacks and is responsible for building the base images that applications are built on. You can think of it as producing the "stack" for Dokku, to borrow a concept from Heroku.&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://github.com/progrium/gitreceive"&gt;Gitreceive&lt;/a&gt; is a project that provides you with a git user that you can push repositories to. It also triggers a script to handle that push. This provides the push mechanism that you might be familiar with from Heroku. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;There are a few other projects being developed to support Dokku and expand its functionality without inflating its line count. Each project is independently useful, but I'll share more about these as they're integrated into Dokku.&lt;/p&gt;
+
+&lt;p&gt;For now, here's a screencast that shows how to set up Dokku, along with a quick walk-through of the code.&lt;/p&gt;
+
+&lt;iframe src="http://player.vimeo.com/video/68631325" width="700" height="394" frameborder="0" webkitallowfullscreen="webkitAllowFullScreen" mozallowfullscreen="mozallowfullscreen" allowfullscreen="allowFullScreen"&gt;No iFrames?&lt;/iframe&gt;
+
+</content>
+  </entry>
+  <entry>
+    <title>Executable Tweets and Programs in Short URLs</title>
+    <link rel="alternate" href="http://progrium.com/blog/2013/01/05/executable-tweets-and-programs-in-short-urls/"/>
+    <id>http://progrium.com/blog/2013/01/05/executable-tweets-and-programs-in-short-urls/</id>
+    <published>2013-01-04T18:00:00-06:00</published>
+    <updated>2014-06-24T15:41:44-05:00</updated>
+    <author>
+      <name>Jeff Lindsay</name>
+    </author>
+    <content type="html">&lt;p&gt;A few weeks ago I was completely consumed for
+the better part of a day that I would have otherwise spent on more practical
+work.&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center"&gt;&lt;p&gt;Let's reflect. On a whim, I spent 6 hours writing programs that live in URL shorteners to create installable programs from Tweets.&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a href="https://twitter.com/progrium/status/279118756561711104" data-datetime="2012-12-13T07:01:11+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;p&gt;Yeah, what? Weird, right? It started from a Twitter conversation earlier that day with my friend Joel:&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center"&gt;&lt;p&gt;$ for app in `heroku apps | grep -v '='`; do echo &lt;a href="https://twitter.com/search/$app"&gt;$app&lt;/a&gt;; heroku ps --app &lt;a href="https://twitter.com/search/$app"&gt;$app&lt;/a&gt;; done # how to figure out what you have running on heroku&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a href="https://twitter.com/jf/status/279030460674347008" data-datetime="2012-12-13T01:10:20+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279030460674347008"&gt;&lt;p&gt;@&lt;a href="https://twitter.com/jf"&gt;jf&lt;/a&gt; reminds me of yet another app i need to build&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a href="https://twitter.com/progrium/status/279030609345667072" data-datetime="2012-12-13T01:10:56+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279030609345667072"&gt;&lt;p&gt;@&lt;a href="https://twitter.com/progrium"&gt;progrium&lt;/a&gt; I just wrote and launched a "client side" "bash app" right there. Bam.&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a href="https://twitter.com/jf/status/279031831809097728" data-datetime="2012-12-13T01:15:47+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279031831809097728"&gt;&lt;p&gt;@&lt;a href="https://twitter.com/jf"&gt;jf&lt;/a&gt; app tweets. an app in a tweet.&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a href="https://twitter.com/progrium/status/279032107265839104" data-datetime="2012-12-13T01:16:53+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279032107265839104"&gt;&lt;p&gt;@&lt;a href="https://twitter.com/progrium"&gt;progrium&lt;/a&gt; $ apptweet install id:279030460674347008&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a href="https://twitter.com/jf/status/279032681373790208" data-datetime="2012-12-13T01:19:10+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;p&gt;This wishful brainstorming inspired me to start building exactly that.
+But first, a digression.&lt;/p&gt;
+
+&lt;p&gt;The idea reminded me of an idea I got from &lt;a href="https://twitter.com/rndmcnlly"&gt;Adam
+Smith&lt;/a&gt; back when I was working on
+Scriptlets. If you can execute code from a URL, you could "store" a
+program in a shortened URL. I decided to combine this with the
+curl-pipe-bash technique that's been starting to get popular to
+bootstrap installs. If you're unfamiliar, take this Gist of a Bash
+script:&lt;/p&gt;
+
+&lt;script src="https://gist.github.com/4464431.js"&gt; &lt;/script&gt;
+
+&lt;p&gt;Given the "view raw" URL for that Gist, you can curl it and pipe it into Bash to
+execute it right there in your shell. It would look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ curl -s https://gist.github.com/raw/4464431/gistfile1.txt | bash
+Hello world
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Instead of having Gist store the program, how could we make it so the
+source would just live within the URL? Well in the case of
+curl-pipe-bash, we just need that source to be returned in the body of a
+URL. So I built a simple app to run on Heroku that takes the query
+string and outputs it in the body, a sort of echo service. &lt;/p&gt;
+
+&lt;script src="https://gist.github.com/4464442.js"&gt; &lt;/script&gt;
+
+&lt;p&gt;Letting you do this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ curl "http://queryecho.herokuapp.com?Hello+world"
+Hello world
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which you could conceal and shorten with a URL shortener, like Bitly. I
+prefer the j.mp domain Bitly has. And since they're just redirecting you to the
+long URL, you'd use the &lt;code&gt;-L&lt;/code&gt; option in curl to make it follow redirects:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ curl -L http://j.mp/RyUN03
+Hello world
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When you make a short URL from the bitly website, they conveniently make
+sure the query string is properly URL encoded. So if I just typed
+&lt;code&gt;queryecho.herokuapp.com/?echo "Hello world"&lt;/code&gt; into bitly, it
+would give me a short URL with a properly URL encoded version of that
+URL that would return &lt;code&gt;echo "Hello world"&lt;/code&gt;. This URL we could then curl-pipe into Bash:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ curl -Ls http://j.mp/VGgI3o | bash
+Hello world
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;See what's going on there? We wrote a simple Hello world program in Bash
+that effectively lives in that short URL. And we can run it with
+the curl-pipe-bash technique.&lt;/p&gt;
+
+&lt;p&gt;Later in our conversation, Joel suggests an example "app tweet" that if
+executed in Bash given a URL argument, it would tell you where it
+redirects. So if you gave it a short URL, it would tell you the long
+URL.&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279032107265839104"&gt;&lt;p&gt;@&lt;a href="https://twitter.com/progrium"&gt;progrium&lt;/a&gt; $ echo "$1"; curl -IL --silent "$1" | grep Location | grep -o 'http.*' # this is a URL "unshortener"&lt;/p&gt;&amp;mdash; Joël Franusic (@jf) &lt;a href="https://twitter.com/jf/status/279033679592951809" data-datetime="2012-12-13T01:23:08+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;p&gt;Just so you know what it would look like, if you put that program in a
+shell script and ran it against a short URL that redirected to www.google.com, this is what you would see:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ ./unshortener.sh http://j.mp/www-google-com
+http://j.mp/www-google-com
+http://www.google.com/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It prints the URL you gave it and then resolves the URL and
+prints the long URL. Pretty simple. &lt;/p&gt;
+
+&lt;p&gt;So I decided to put this program in a short URL. Here we have &lt;a href="http://j.mp/TaHyRh"&gt;j.mp/TaHyRh&lt;/a&gt; which will resolve to:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;http://queryecho.herokuapp.com/?echo%20%22$url%22;%20curl%20-ILs%20%22$url%22%20|%20grep%20Location%20|%20grep%20-o%20'http.*'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Luckily I didn't have to do all that URL encoding. I just pasted his
+code in after &lt;code&gt;queryecho.herokuapp.com/?&lt;/code&gt; and bitly took care of it.
+What's funny is that this example program is made to run on short URLs,
+so when I told him about it, my example ran on the short URL that
+contained the program itself:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ curl -Ls http://j.mp/TaHyRh | url=http://j.mp/TaHyRh bash
+http://j.mp/TaHyRh
+http://queryecho.herokuapp.com/?echo "$url"; curl -ILs "$url" | grep Location | grep -o 'http.*'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You may have noticed my version of the program uses &lt;code&gt;$url&lt;/code&gt; instead of
+&lt;code&gt;$1&lt;/code&gt; because we have to use environment variables to provide input to
+curl-pipe-bash scripts. For reference, to run my URL script against the
+google.com short URL we made before, it would look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ curl -Ls http://j.mp/TaHyRh | url=http://j.mp/www-google-com bash
+http://j.mp/www-google-com
+http://www.google.com/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Okay, so we can now put Bash scripts in short URLs. What happened to
+installing apps in Tweets? Building an &lt;code&gt;apptweet&lt;/code&gt; program like Joel
+imagined would actually be pretty straightforward. But I wanted to build
+it in and install it with these weird programs-in-short-URLs. &lt;/p&gt;
+
+&lt;p&gt;The first obstacle was figuring out how to get it to modify your current
+environment. Normally curl-pipe-bash URLs install a downloaded program
+into your &lt;code&gt;PATH&lt;/code&gt;. But I didn't want to install a bunch of files on your
+computer. Instead I just wanted to install a temporary Bash function
+that would disappear when you leave your shell session. In order to do
+this, I had to do a variant of the curl-pipe-bash technique using eval:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ eval $(curl -Ls http://j.mp/setup-fetchtweet)
+$ fetchtweet 279072855206031360
+@jf you asked for it... Jeff Lindsay (@progrium) December 13, 2012
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see by inspecting that URL, it just defines a Bash function
+that runs a Python script from a Gist. I cheated and used Gist for some
+reason. That Python script uses the Twitter embed endpoint (same one
+used for the embedded Tweets in this post) to get the contents of a
+Tweet without authentication. &lt;/p&gt;
+
+&lt;p&gt;The next thing I built installed and used fetchtweet
+to get a Tweet, parse it, put it in a Bash function named by the string
+after an &lt;code&gt;#exectweet&lt;/code&gt; hashtag (which happens to also start a comment in Bash). So here we have a Tweet with a program in it:&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center"&gt;&lt;p&gt;echo Hello world &lt;a href="https://twitter.com/search/%23exectweet"&gt;#exectweet&lt;/a&gt; helloworld&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a href="https://twitter.com/progrium/status/279087620145958912" data-datetime="2012-12-13T04:57:28+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;p&gt;To install it, we'd run this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ id=279087620145958912 eval $(curl -Ls http://j.mp/install-tweet)
+Installed helloworld from Tweet 279087620145958912
+$ helloworld
+Hello world
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We just installed a program from a Tweet and ran it! Then I wrapped this
+up into a command you could install. To install the installer. This time it would let you give it the URL to a Tweet:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ eval $(curl -Ls http://j.mp/install-exectweet) 
+Installed exectweet
+$ exectweet https://twitter.com/progrium/status/279087620145958912
+Installed helloworld from Tweet 279087620145958912
+$ helloworld
+Hello world
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where would I go from there? An app that calls itself into a loop, of course!&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center"&gt;&lt;p&gt;exectweet &lt;a href="http://t.co/ri0XTprA" title="http://j.mp/recursive-app"&gt;j.mp/recursive-app&lt;/a&gt; ; recursive-app &lt;a href="https://twitter.com/search/%23exectweet"&gt;#exectweet&lt;/a&gt; recursive-app&lt;/p&gt;&amp;mdash; Jeff Lindsay (@progrium) &lt;a href="https://twitter.com/progrium/status/279123541054595074" data-datetime="2012-12-13T07:20:12+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ exectweet https://twitter.com/progrium/status/279123541054595074 &amp;amp;&amp;amp; recursive-app
+Installed recursive-app from Tweet 279123541054595074
+Installed recursive-app from Tweet 279123541054595074
+Installed recursive-app from Tweet 279123541054595074
+Installed recursive-app from Tweet 279123541054595074
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Obviously, this whole project was just a ridiculous, mind-bending exploration.
+I shared most of these examples on Twitter as I was making them. Here
+was my favorite response.&lt;/p&gt;
+
+&lt;blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279087620145958912"&gt;&lt;p&gt;@&lt;a href="https://twitter.com/progrium"&gt;progrium&lt;/a&gt; End of the world, brought to you by Jeff Lindsay, via the Internet collapsing in on itself and taking the world with it.&lt;/p&gt;&amp;mdash; Matt Mechtley (@biphenyl) &lt;a href="https://twitter.com/biphenyl/status/279088441084497922" data-datetime="2012-12-13T05:00:44+00:00"&gt;December 12, 2012&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script src="//platform.twitter.com/widgets.js" charset="utf-8"&gt; &lt;/script&gt;
+
+&lt;p&gt;You may have noticed, it just happened to be 12/12/2012 that day.&lt;/p&gt;
+
+&lt;style type="text/css"&gt;
+.twitter-tweet-rendered {
+  clear: none!important;
+}
+.twt-reply {
+  display: none!important;
+}
+&lt;/style&gt;
+
+</content>
+  </entry>
+  <entry>
+    <title>Where did Localtunnel come from?</title>
+    <link rel="alternate" href="http://progrium.com/blog/2013/01/01/where-did-localtunnel-come-from/"/>
+    <id>http://progrium.com/blog/2013/01/01/where-did-localtunnel-come-from/</id>
+    <published>2012-12-31T18:00:00-06:00</published>
+    <updated>2014-06-24T15:41:44-05:00</updated>
+    <author>
+      <name>Jeff Lindsay</name>
+    </author>
+    <content type="html">&lt;p&gt;Five years ago, async network programming scared me. I was a web developer. Working with the high level tools and frameworks of HTTP seemed much easier than any sort of serious low level networking. Especially since network programming would often also mean some kind of concurrent programming with threads or callbacks. I had mostly avoided multithreading and had no idea what an event loop was. I came from PHP.&lt;/p&gt;
+
+&lt;p&gt;Around 2007, I was starting to think about webhooks. One motivator was how you could use webhooks to let web developers, like me, build systems that used other protocols without them having to work with that protocol. For example, one of my first projects with webhooks was called Mailhooks. I wanted to accept email in my application, but I didn't want to deal with email servers. I wanted to get an HTTP POST when an email came in with all the email fields nicely provided as POST parameters. &lt;/p&gt;
+
+&lt;p&gt;This is how I started working with Twisted. Twisted became my main tool to build webhook adapters for existing protocols. I even tried to generalize that idea in a project called Protocol Droid. Slowly I started to grok, and not fear, this kind of programming.&lt;/p&gt;
+
+&lt;p&gt;It's funny how my desire to work with abstractions that didn't exist yet to avoid a certain kind of programming was directly responsible for me eventually becoming an expert in that kind of programming. &lt;/p&gt;
+
+&lt;p&gt;Then in late 2009, I had another idea while thinking about webhooks. It would be great if I could expose a local web server to the Internet with a friendly URL. It should just be a simple command. There would have to be a server, but there could just be a public server that you didn't even have to think about. &lt;/p&gt;
+
+&lt;p&gt;I committed &lt;a href="https://github.com/progrium/localtunnel/tree/prototype"&gt;the first prototype of Localtunnel&lt;/a&gt; to Github in January 2010. It was written entirely in Twisted. It also didn't actually work. I really recommend taking a look because it was terrible. One of the challenges was multiplexing the HTTP requests into a single tunnel connection. My approach was so naive it just didn't work. As soon as you made more than one request at a time, it broke.&lt;/p&gt;
+
+&lt;p&gt;A few months later, I decided to take a different approach. Instead of doing my own protocol, client, and server, I'd just make a wrapper around what I knew already worked: SSH tunneling. This was pretty quick to make happen, and that version is basically what's been in production to this day.&lt;/p&gt;
+
+&lt;p&gt;This shortcut came with a lot of weird quirks. For example, the easiest way I found to implement an SSH tunnel client was a Ruby library, so I implemented the client in Ruby. The server, though, was in Python because I still only really knew Twisted for evented programming.&lt;/p&gt;
+
+&lt;p&gt;Actually, using SSH was the source of most of the quirks and annoyances. I was pretty bothered that it slowed down the initial user experience by requiring a public key to be uploaded. But most of the pain was operational. The server, sshd, would create a process for every tunnel. Localtunnel also needed its own user and to pretty much own the SSH configuration for that machine. Then, on occasion, something weird would happen where a tunnel would die and the process would go crazy eating up CPU. It would have to be manually killed or it would eventually bring the server to a halt. And, eventually, the authorized_keys file would become enormous from all the keys uploaded. 	&lt;/p&gt;
+
+&lt;p&gt;On top of all this, SSH is pretty opaque. It's been around for so long and used so much that it certainly just works … you just don't really know how. I still don't know how SSH does tunneling or what the protocol looks like, even after trying to read the RFC for it.&lt;/p&gt;
+
+&lt;p&gt;By mid-2011, I was working at Twilio building distributed, real-time messaging systems at scale. I certainly came a long way from fearing async network programming. Localtunnel was still running the implementation based on SSH. By then it had quite a large user base and collected a number of bugs and feature requests. I also had my own operations and user experience wish list. With such a huge list of new requirements, so many problems with the current implementation, and a drastically different experience level and mindset, I decided to redesign Localtunnel from the ground up. &lt;/p&gt;
+
+&lt;p&gt;Since I was pretty consumed by Twilio, I didn't have a lot of time to work on Localtunnel. I thought the biggest bang for buck in the long term would be to slowly work on the new version. They say software is never done, but I personally believe software can be finished. It just requires an aggressive drive for simplicity, and the &lt;em&gt;only&lt;/em&gt; way you can make significant advances in simplicity is through redesign.&lt;/p&gt;
+
+&lt;p&gt;In the meantime, users continued to experience issues with the current implementation. These problems only got worse as it became more popular. For example, the biggest issue was that the namespace for tunnel names was too small. Users would get requests from old tunnels, and in rare cases tunnel names would get pulled out from under you while using them. This created confusion and a lot of emails and issue tickets, but it still worked with the occasional restart.&lt;/p&gt;
+
+&lt;p&gt;I've used this constant stream of complaints, which has been going on for almost two years, to make sure I keep making progress on the new version. In fact, I'm pretty sure I needed it because of my lifestyle of abundant projects. &lt;/p&gt;
+
+&lt;p&gt;Last week I finally &lt;a href="http://progrium.com/blog/2012/12/25/localtunnel-v2-available-in-beta/"&gt;released a beta of the new version&lt;/a&gt;. What's interesting is that it's a completely different architecture from what I started out with for the redesign. After the original unreleased prototype, there's been 3 major approaches to implementation. In the coming weeks I'm going to share a more technical history of the architecture of Localtunnel, leading up to a deep exploration of what I hope will be its final form.&lt;/p&gt;
+</content>
+  </entry>
+</feed>

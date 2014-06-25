@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <title>Jeff Lindsay</title>
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blog/atom.xml" />
+
+    <link href='http://fonts.googleapis.com/css?family=Dosis:400,300,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700' rel='stylesheet' type='text/css'>
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+  <div id="wrapper">
+    
+    <header>
+      <div class="container clearfix">
+        <h1 id="logo">
+          Progrium <span>// Jeff Lindsay</span>
+        </h1>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/about">About</a>
+          <a href="http://github.com/progrium">Projects</a>
+          <a href="/blog">Blog</a>
+          <a class="hire" href="mailto:progrium+hire@gmail.com">HIRE ME</a>
+        </nav>
+      </div>
+    </header>
+    
+    <main id="main" role="main">
+      <section>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">Jun</span>
+                    <span class="day">26</span>
+                    <span class="year">2009</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2009/06/26/why-minimalist-software-wins-at-workflow/">Why minimalist software wins at workflow</a></h1>
+            <p>Recently I've been evaluating software to help support agile/scrum development on our team, and ideally to roll into our NASA Code product for others to use. We're already married to <a href="http://trac.edgewall.org/">Trac</a>, so we've been playing with <a href="http://www.agile42.com/cms/pages/agilo/">Agilo</a> and are looking at some of the other agile plugins for Trac. Unfortunately they're all so heavyweight, despite some that claim not to be.</p>
+
+<p>I came back to a realization I'm sure a lot of us have had: most software sucks. Especially software that's intended to augment some real-life process. When asking friend/colleague <a href="http://timothyfitz.com">Timothy Fitz</a> about recommendations on agile tools, he said: "A board and post-its. Seriously."</p>
+
+<p>This is part of the reason most enterprise software sucks so terribly. Enterprise is about lots of real-life process and workflow, and given that process augmentation software even in small doses generally sucks, large amounts of it will suck exponentially.</p>
+
+<p>A lot of us have learned that less software is more effective. One major attraction of Trac was their goal of staying out of the way through minimalism. The trick with minimalism, in general, is knowing what's actually important; the essence of the message or design. This is a big part of my design process. Asking, "How can I fold these requirements into fewer features and UI?" instead of directly implementing a feature for every requirement.</p>
+
+<p>The other thing about minimalism is that, like abstraction (another form of compression), everything you leave in the design makes such a huge difference. In programming, when you make abstractions, you're deciding what you can assume. This means abstractions can go in different directions depending on the assumption requirements of what's going to use the abstraction. The risk with minimalist software is that a simple design choice can drastically change the direction of the abstraction and make or break whether the software fits your needs.</p>
+
+<p>Luckily, minimalism buys you a sort of abstraction that can enable projection. By this I mean that users can project their actual process and workflow onto the software. If it doesn't have features that impose a particular process, users are free to do what works for them. This is why wikis are so powerful.</p>
+
+<p>Coming back to Timothy's "a board and post-its" remark, why do you even need software? If you can do it without software, why would you want to bring software in to slow things down?</p>
+
+<p>Software does have a couple strengths. First, it encodes process in way that means you can automate parts of it. Nobody has to worry about manually typesetting when using a word processor. Second, it persists and organizes information that would normally be lost in handwritten notes, or worse, somebody's head. The trick is getting these advantages without getting in the way.</p>
+
+<p>A naive approach to software design is thinking that perfectly modeling a system, such as your development process, is the way to good software. I used to think this. It sounds great because then you can programmatically reason about every aspect of the system. But in the real-world, no two systems are exactly alike. In fact, a given system can change quite a bit in its lifetime. So there's really no point to modeling systems with that kind of precision.</p>
+
+<p>However, I'm seeing a lot of this in agile/scrum software. Requirements have stories, stories have tasks, organized into iterations and releases. CRUD for every noun mentioned in scrum. This on top of abstractions in a direction different than we need. Numbers where it doesn't really matter. Nice pie chart breakdowns we'll rarely use. Top it off with horrible UI, since with all these features there isn't time to make them easy to use.</p>
+
+<p>Honestly, <a href="http://www.pivotaltracker.com/">Pivotal Tracker</a> seems to have the best abstraction of agile. It folds requirements, stories and tasks into just stories. It automatically and dynamically creates iterations and calculates velocity. It keeps you on a single page, keeping you focused on what's important.</p>
+
+<p>Unfortunately, we can't use Pivotal Tracker since we'd need it on our servers and the licensing they offered doesn't scale if we want to essentially give it away as part of NASA Code. It's likely I'll want to just start nudging Trac in the right direction using Pivotal Tracker as a model reference, pulling together code from Agilo and other plugins. If there's one thing that complements minimalist design, it's an extension architecture, and Trac has an excellent plugin system.</p>
+
+<p>Anyway, as far as augmenting process and workflow, I've always liked the idea of starting with a wiki and lazily formalizing the process into custom software as needed. As long as you can keep it under control, mind your requirement abstractions, and avoid writing too much software.</p>
+
+          </article>
+          <br /><a href="/blog/2009/06/26/why-minimalist-software-wins-at-workflow/#disqus_thread">Comments</a>
+        </div>
+        
+        <div class="col-lg-3" id="sidebar">
+            <img src="/images/jeffphoto.gif" id="photo" />
+            <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
+        </div>
+    </div>
+</div>
+</section>
+
+
+<section  class="alternate">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">Jun</span>
+                    <span class="day">17</span>
+                    <span class="year">2009</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2009/06/17/oh-no-hackers/">Oh no! Hackers!</a></h1>
+            <p>That's right. Hide your floppies and cover your Ethernet ports. Virus-laden hackers are coming to take over your computer, steal your passwords, and do terrible things! Like hack your MySpace! Oh noes!</p>
+
+<p>I guess I'm getting over the fact that we probably won't be able to undo the damage done with the public's perception of what a "hacker" is. Perhaps, though, we can overload it to the point of ambiguity, so there's at least some question of context whether it's the good kind or the bad kind.</p>
+
+<p>The problem is that positive connotations aren't enough. The people that would venture to understand "hackers" the slightest bit more than what they hear in the headlines are going to pretty quickly find the "good hackers" … they're white hats, right?</p>
+
+<p>The other day I was questioned by somebody (that should know better) if I hacked somebody's website that was recently compromised. Seriously? My response was "I barely have enough time to do important things, let alone something that would be a waste of my time."</p>
+
+<p>I self-identify as a hacker. I invite my friends over to "hack." I started a party for "hackers and thinkers" (a very intentional choice of words). I'm co-founding a community center called Hacker Dojo. What are we doing at all these functions? Building and learning.</p>
+
+<p>We use the term perhaps too liberally, but always implying tribute to the true hackers that, as Steven Levy put it, "regard computing as the most important thing in the world."</p>
+
+<p>These people push the envelope of what's possible through hands-on exploration, driven by relentless curiosity and a desire to challenge the status quo. Steve Wozniak, Lee Felsenstein, Linus Torvalds, Tim Berners-Lee, John Carmack…</p>
+
+<p>Hell, there's something big behind this idea, why stop at computing? Buckminster Fuller, Nikola Tesla, Richard Feynman, Alfred Kinsey, Ben Franklin…</p>
+
+<p>Perhaps we're generalizing too far. Perhaps we're rendering "hacker" meaningless. Or are we giving it more meaning? Getting down to its essence. I wouldn't be defending this idea so strongly if I didn't think it had some great significance to humanity.</p>
+
+<p>What upsets me is that many who would identify as hackers in this sense seem to be afraid to claim it. Most likely in fear of confusing the layman that has the media's myopic view of hackers. You've never heard of the canonical conference for real hackers. No, it's not DefCon. (Just get up and leave.) It's a conference called Hackers. You've never heard of it because they keep it secret!</p>
+
+<p>This conference was started to gather everybody together that was mentioned in Steven Levy's book <a href="http://www.amazon.com/Hackers-Computer-Revolution-Steven-Levy/dp/0141000511/ref=sr_1_2?ie=UTF8&amp;s=books&amp;qid=1245307316&amp;sr=8-2">Hackers: Heroes of the Computer Revolution</a> (one of the last good publication on hackers, and it came out in 1984!). This conference holds all the values of true hackerism and it's been happening for 25 years. But they won't promote it! It goes by a fake name and even has all mentions of "hacker" on their website replaced with an image so it won't be indexed. Seriously??</p>
+
+<p>Trying to supplant public perception of hackers by just saying they're something different and providing a better name nobody uses ("crackers") is not going to work. It hasn't worked. They need something to replace those visions of crackers with. We need tangible examples and stories. We need heroes. Heroes willing to wear the title.</p>
+
+<p>Luckily, we have a new generation of hackers. One that has started a global movement called <a href="http://hackerspaces.org/">hackerspaces</a>, probably one of the biggest things for hackers in years. Our local hackerscene fostered by Silicon Valley culture and events like <a href="http://devhouse.org">SuperHappyDevHouse</a> have led to a hackerspace we hope will have a big impact. One that proudly wears the name hacker: <a href="http://hackerdojo.com">Hacker Dojo</a>.</p>
+
+          </article>
+          <br /><a href="/blog/2009/06/17/oh-no-hackers/#disqus_thread">Comments</a>
+        </div>
+    </div>
+</div>
+</section>
+<section >
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">May</span>
+                    <span class="day">03</span>
+                    <span class="year">2007</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2007/05/03/web-hooks-to-revolutionize-the-web/">Web hooks to revolutionize the web</a></h1>
+            <p>There once was a command line. It was a powerful thing. Not only could you navigate your filesystem and launch applications, but you could program shell scripts to automate tasks and make convenient shortcuts. It also had pipes.</p>
+
+<p>One of the major sources of power on the Unix command line is the simple construct of input and output. A program can read from <code>STDIN</code> and can write to <code>STDOUT</code>, and you have a fair amount of control over re-routing them however you want. Most commonly this is used to chain commands together, "piping" the output of one to the input of another.</p>
+
+<p>This is infrastructure. Infrastructure that encourages simple, independent programs to be made almost exclusively for the purpose of chaining with other commands. These are commands like cat, grep, uniq, wc, sort, nc, and others. Many of them are useless by themselves, but together they achieve more than the sum of their parts. Especially when combined with larger programs. This is made possible from the simple idea of input and output.</p>
+
+<p>This idea was implemented on Unix in 1977. Twenty years later, Jon Udell expressed a vision of web sites as data sources that could be reused and remixed, and a new programming paradigm that took the whole Internet as its platform. This lead Tim OReilly to ask in 2000:</p>
+
+<blockquote>
+  <p>What is the equivalent of the pipe in the age of the web?</p>
+</blockquote>
+
+<p>There seems to be a resounding consensus that the answer is feeds. The name sounds very promising, it sort of make you imagine feeds like in the telecom world. Data coming directly to you. But this is misleading because feeds aren't about data coming to you. They're about you getting that data yourself. A lot. Over and over again. This is polling.</p>
+
+<p>If you could avoid polling, you probably would. If you're building an app that works with a feed, you have to write a polling system. This means messing with the often-hard-to-debug crontab or writing and managing a full-fledged daemon. Then you have to worry about caching and parsing. Feeds seem to be made for the browser because the browser does a lot of this work for you, but it's a different story if you're constantly polling feeds or APIs in the backend. Then it almost becomes too much work to do anything simple with feeds and APIs. If you want to use feeds for real-time notification, have fun setting that up.</p>
+
+<p>I also think there's a problem with the command line metaphor in the first place. The web is not linear. Web apps aren't synchronous. A better metaphor would be a daemon process. How do they communicate? IPC? Sockets? Queues?</p>
+
+<div class="alert alert-info">
+Note from 2012: Remember, this was 2007. Web developers didn't have Node.js or EventMachine, and mainstream developers didn't understand queuing systems or async operations. Often all they had was Apache and PHP.
+</div>
+
+<p>Unfortunately, web stacks are stateless request processors, so you can't really use sockets. You could use Amazon SQS or some other queuing system, but queues often just move the polling to somewhere else. What we need is something simple, stateless, and ideally real-time. We need to push.</p>
+
+<p>This is where web hooks come in. Web hooks are essentially user defined callbacks made with HTTP POST. To support web hooks, you allow the user to specify a URL where your application will post to and on what events. Now your application is pushing data out wherever your users want. It's pretty much like re-routing <code>STDOUT</code> on the command line.</p>
+
+<p>We're already sort of doing this with pingbacks on blogs. However, the difference with web hooks is that the payload is arbitrary event data and the target URLs are user web scripts or handlers. From there, the users can do whatever they want.</p>
+
+<p>The idea here is to create new infrastructure. New opportunities. I've been thinking a lot about the possibilities of a web hook enabled web, and it makes me really excited. Because it's such open ended infrastructure, I'm sure the possibilities extend well beyond what I can think of. Especially when combined with our growing ecosystem of APIs and feeds.</p>
+
+<p>Web hooks are easy to implement for application developers. You just implement a UI or API to let the user specify target URLs, and then you're just making a standard HTTP POST on events. This is a fairly trivial operation in most environments, since you already do this to use other web APIs. </p>
+
+<p>Let's be clear. When I talk about the user of web hooks, it's often a power user or developer. But being based on HTTP POST makes it very accessible for mainstream web developers. They already know how to work with POST variables. And PHP hosting is widely available and practically free. I think PHP would become a popular language for writing hook scripts.</p>
+
+<p>Just think about it. Writing all the boilerplate polling and parsing infrastructure just to use a feed? Or writing a little PHP script that has all the incoming data in <code>$_POST</code>. Plus it's real-time. Which has a lower barrier to entry when somebody gets a bright idea on how to use all this data we've "opened up" on the programmable web?</p>
+
+<p>The Unix pipe is simple because it's about linear input and output of text streams. The web is very different. At a high level, I think web hooks achieve the same simplicity but more appropriately for the web. When coupled with our existing ecosystem of feeds and APIs, we'll have an even more powerful platform than what pipes gave Unix.</p>
+
+          </article>
+          <br /><a href="/blog/2007/05/03/web-hooks-to-revolutionize-the-web/#disqus_thread">Comments</a>
+        </div>
+    </div>
+</div>
+</section>
+
+
+<section class="alternate">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12"> 
+        <ul class="pager article">
+          <li class="previous disabled">
+            <a href="#">&larr; Older</a>
+          </li>
+        
+          <li class="next">
+            <a href="/blog/page4/">Newer &rarr;</a>
+          </li>
+        </ul>
+        </div>
+    </div>
+</div>
+</section>
+
+    </main>
+    
+    <!--aside>
+      <h2>Recent Articles?</h2>
+      <ol>
+          <li><a href="/blog/2014/02/06/the-start-of-the-age-of-flynn/">The Start of the Age of Flynn</a> <span>Feb  6</span></li>
+          <li><a href="/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation/">Viewdocs: Hosted Markdown project documentation (finally!)</a> <span>Nov 13</span></li>
+          <li><a href="/blog/2013/08/18/hacker-dojo-community-trading-zone/">Hacker Dojo: Community Trading Zone</a> <span>Aug 18</span></li>
+          <li><a href="/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen/">Dokku: The smallest PaaS implementation you've ever seen</a> <span>Jun 19</span></li>
+          <li><a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls/">Executable Tweets and Programs in Short URLs</a> <span>Jan  5</span></li>
+          <li><a href="/blog/2013/01/01/where-did-localtunnel-come-from/">Where did Localtunnel come from?</a> <span>Jan  1</span></li>
+          <li><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta/">Localtunnel v2 available in beta</a> <span>Dec 25</span></li>
+          <li><a href="/blog/2012/12/17/http-signatures-with-content-hmac/">HTTP Signatures with Content-HMAC</a> <span>Dec 17</span></li>
+          <li><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking/">Avoiding environmental fallacy with systems thinking</a> <span>Dec 15</span></li>
+          <li><a href="/blog/2012/12/06/async-http-responses-with-response-redirection/">Async HTTP Responses with Response Redirection</a> <span>Dec  6</span></li>
+      </ol>
+
+      <h2>Tags</h2>
+      <ol>
+      </ol>
+
+      <h2>By Year</h2>
+      <ol>
+          <li><a href="/blog/2014/">2014 (1)</a></li>
+          <li><a href="/blog/2013/">2013 (5)</a></li>
+          <li><a href="/blog/2012/">2012 (8)</a></li>
+          <li><a href="/blog/2010/">2010 (3)</a></li>
+          <li><a href="/blog/2009/">2009 (5)</a></li>
+          <li><a href="/blog/2007/">2007 (1)</a></li>
+      </ol>
+    </aside-->
+
+    <footer>
+      <div class="container clearfix">
+        &copy; 2014 Jeff Lindsay, Progrium Labs
+      </div>
+    </footer>
+
+  </div>
+  <script src="/javascripts/all.js" type="text/javascript"></script>
+  </body>
+</html>

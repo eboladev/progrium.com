@@ -1,0 +1,408 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <title>Jeff Lindsay</title>
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blog/atom.xml" />
+
+    <link href='http://fonts.googleapis.com/css?family=Dosis:400,300,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700' rel='stylesheet' type='text/css'>
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+  <div id="wrapper">
+    
+    <header>
+      <div class="container clearfix">
+        <h1 id="logo">
+          Progrium <span>// Jeff Lindsay</span>
+        </h1>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/about">About</a>
+          <a href="http://github.com/progrium">Projects</a>
+          <a href="/blog">Blog</a>
+          <a class="hire" href="mailto:progrium+hire@gmail.com">HIRE ME</a>
+        </nav>
+      </div>
+    </header>
+    
+    <main id="main" role="main">
+      <section>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">Jan</span>
+                    <span class="day">01</span>
+                    <span class="year">2013</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2013/01/01/where-did-localtunnel-come-from/">Where did Localtunnel come from?</a></h1>
+            <p>Five years ago, async network programming scared me. I was a web developer. Working with the high level tools and frameworks of HTTP seemed much easier than any sort of serious low level networking. Especially since network programming would often also mean some kind of concurrent programming with threads or callbacks. I had mostly avoided multithreading and had no idea what an event loop was. I came from PHP.</p>
+
+<p>Around 2007, I was starting to think about webhooks. One motivator was how you could use webhooks to let web developers, like me, build systems that used other protocols without them having to work with that protocol. For example, one of my first projects with webhooks was called Mailhooks. I wanted to accept email in my application, but I didn't want to deal with email servers. I wanted to get an HTTP POST when an email came in with all the email fields nicely provided as POST parameters. </p>
+
+<p>This is how I started working with Twisted. Twisted became my main tool to build webhook adapters for existing protocols. I even tried to generalize that idea in a project called Protocol Droid. Slowly I started to grok, and not fear, this kind of programming.</p>
+
+<p>It's funny how my desire to work with abstractions that didn't exist yet to avoid a certain kind of programming was directly responsible for me eventually becoming an expert in that kind of programming. </p>
+
+<p>Then in late 2009, I had another idea while thinking about webhooks. It would be great if I could expose a local web server to the Internet with a friendly URL. It should just be a simple command. There would have to be a server, but there could just be a public server that you didn't even have to think about. </p>
+
+<p>I committed <a href="https://github.com/progrium/localtunnel/tree/prototype">the first prototype of Localtunnel</a> to Github in January 2010. It was written entirely in Twisted. It also didn't actually work. I really recommend taking a look because it was terrible. One of the challenges was multiplexing the HTTP requests into a single tunnel connection. My approach was so naive it just didn't work. As soon as you made more than one request at a time, it broke.</p>
+
+<p>A few months later, I decided to take a different approach. Instead of doing my own protocol, client, and server, I'd just make a wrapper around what I knew already worked: SSH tunneling. This was pretty quick to make happen, and that version is basically what's been in production to this day.</p>
+
+<p>This shortcut came with a lot of weird quirks. For example, the easiest way I found to implement an SSH tunnel client was a Ruby library, so I implemented the client in Ruby. The server, though, was in Python because I still only really knew Twisted for evented programming.</p>
+
+<p>Actually, using SSH was the source of most of the quirks and annoyances. I was pretty bothered that it slowed down the initial user experience by requiring a public key to be uploaded. But most of the pain was operational. The server, sshd, would create a process for every tunnel. Localtunnel also needed its own user and to pretty much own the SSH configuration for that machine. Then, on occasion, something weird would happen where a tunnel would die and the process would go crazy eating up CPU. It would have to be manually killed or it would eventually bring the server to a halt. And, eventually, the authorized_keys file would become enormous from all the keys uploaded. 	</p>
+
+<p>On top of all this, SSH is pretty opaque. It's been around for so long and used so much that it certainly just works … you just don't really know how. I still don't know how SSH does tunneling or what the protocol looks like, even after trying to read the RFC for it.</p>
+
+<p>By mid-2011, I was working at Twilio building distributed, real-time messaging systems at scale. I certainly came a long way from fearing async network programming. Localtunnel was still running the implementation based on SSH. By then it had quite a large user base and collected a number of bugs and feature requests. I also had my own operations and user experience wish list. With such a huge list of new requirements, so many problems with the current implementation, and a drastically different experience level and mindset, I decided to redesign Localtunnel from the ground up. </p>
+
+<p>Since I was pretty consumed by Twilio, I didn't have a lot of time to work on Localtunnel. I thought the biggest bang for buck in the long term would be to slowly work on the new version. They say software is never done, but I personally believe software can be finished. It just requires an aggressive drive for simplicity, and the <em>only</em> way you can make significant advances in simplicity is through redesign.</p>
+
+<p>In the meantime, users continued to experience issues with the current implementation. These problems only got worse as it became more popular. For example, the biggest issue was that the namespace for tunnel names was too small. Users would get requests from old tunnels, and in rare cases tunnel names would get pulled out from under you while using them. This created confusion and a lot of emails and issue tickets, but it still worked with the occasional restart.</p>
+
+<p>I've used this constant stream of complaints, which has been going on for almost two years, to make sure I keep making progress on the new version. In fact, I'm pretty sure I needed it because of my lifestyle of abundant projects. </p>
+
+<p>Last week I finally <a href="http://progrium.com/blog/2012/12/25/localtunnel-v2-available-in-beta/">released a beta of the new version</a>. What's interesting is that it's a completely different architecture from what I started out with for the redesign. After the original unreleased prototype, there's been 3 major approaches to implementation. In the coming weeks I'm going to share a more technical history of the architecture of Localtunnel, leading up to a deep exploration of what I hope will be its final form.</p>
+
+          </article>
+          <br /><a href="/blog/2013/01/01/where-did-localtunnel-come-from/#disqus_thread">Comments</a>
+        </div>
+        
+        <div class="col-lg-3" id="sidebar">
+            <img src="/images/jeffphoto.gif" id="photo" />
+            <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
+        </div>
+    </div>
+</div>
+</section>
+
+
+<section  class="alternate">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">Dec</span>
+                    <span class="day">25</span>
+                    <span class="year">2012</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta/">Localtunnel v2 available in beta</a></h1>
+            <p>A few years back, I released <a href="http://localtunnel.com">Localtunnel</a> to make it super easy to expose a local web server to the Internet for demos and debugging. Since then, it's gotten a ton of use. A few people even copied it and tried to make a paid service around the idea. Luckily, Localtunnel will always be free and open source. </p>
+
+<p>With the release of <a href="http://j.mp/localtunnel-v2">Localtunnel v2</a>, it will not only remain competitive with similar services, but continue to be the innovator of the group. I'll post more on this later.</p>
+
+<p>For now, let's talk logistics. The current, soon-to-be-legacy Localtunnel stack includes the client that you install with Rubygems, and a server that runs on a host at Rackspace. These will continue to be available into 2013, but will be marked as deprecated. This means you should be making the switch to v2.</p>
+
+<p>Besides the fact v1 will eventually be shutdown, there are a number of reasons to switch to v2. Here are some of the major ones:</p>
+
+<ul>
+  <li>It's actively maintained. Bug reports, pull requests, and service interruptions are dealt with promptly.</li>
+  <li>No more mysterious requests from old tunnels. The subdomain namespace is much larger.</li>
+  <li>Custom subdomains. The new client lets you pick a tunnel name on a first come, first served basis.</li>
+  <li>Supports long-polling, HTTP streaming, and WebSocket upgrades. Soon general TCP tunneling.</li>
+  <li>No SSH key to start using it. A minor annoyance setting up v1, but it doesn't exist in v2.</li>
+</ul>
+
+<p>One implementation detail that affects users is that the client is now written in Python. This means you won't use Rubygems to install it. Instead, you can use <code>easy_install</code> or <code>pip</code>. </p>
+
+<pre><code class="highlight plaintext">$ easy_install localtunnel
+</code></pre>
+
+<p>On some systems, you may need to run this with <code>sudo</code>. If you don't have <code>easy_install</code>, first make sure you have Python installed:</p>
+
+<pre><code class="highlight plaintext">$ python --version
+</code></pre>
+
+<p>Localtunnel requires Python 2.6 or later, which comes standard on most systems. If you don't have Python, you can <a href="http://wiki.python.org/moin/BeginnersGuide/Download">install it for your platform</a>. If <code>easy_install</code> isn't available after you install Python, you can install it with this bootstrap script:</p>
+
+<pre><code class="highlight plaintext">$ curl http://peak.telecommunity.com/dist/ez_setup.py | python
+</code></pre>
+
+<p>Once you've installed Localtunnel with <code>easy_install</code>, it will be available as <code>localtunnel-beta</code>. This lets you keep the old client to use in case anything goes wrong with v2 during the beta. Eventually, it will be installed as <code>localtunnel</code>, but only after v1 is shutdown.  </p>
+
+<p>Using <code>localtunnel-beta</code> is pretty much the same as before:</p>
+
+<pre><code class="highlight plaintext">$ localtunnel-beta 8000
+  Thanks for trying localtunnel v2 beta!
+
+  Port 8000 is now accessible from http://fb0322605126.v2.localtunnel.com ...
+</code></pre>
+
+<p>Like I mentioned earlier, you can use a custom tunnel name if it's not being used:</p>
+
+<pre><code class="highlight plaintext">$ localtunnel-beta -n foobar 8000
+  Thanks for trying localtunnel v2 beta!
+
+  Port 8000 is now accessible from http://foobar.v2.localtunnel.com ...
+</code></pre>
+
+<p>Keep in mind v2 is in active development. There might be some downtime while I work out operational bugs, but you can always use the old version if you run into problems. </p>
+
+<p>If you do run into any problems, you can <a href="http://twitter.com/progrium">ping me on Twitter</a>. If you get traceback you can <a href="https://github.com/progrium/localtunnel/issues">create an issue on Github</a>. If you have more in-depth questions or want to get involved in development, check out the <a href="https://groups.google.com/forum/#!forum/localtunnel">Localtunnel Google Group</a>.</p>
+
+
+          </article>
+          <br /><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta/#disqus_thread">Comments</a>
+        </div>
+    </div>
+</div>
+</section>
+<section >
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">Dec</span>
+                    <span class="day">17</span>
+                    <span class="year">2012</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2012/12/17/http-signatures-with-content-hmac/">HTTP Signatures with Content-HMAC</a></h1>
+            <p>Today I wanted to propose another header. It would be used for signing HTTP content with HMAC, and is appropriately called Content-HMAC. In <a href="http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/">a previous post</a> about the Callback header, I mentioned using an X-Signature header in callback requests to sign the payload of the callback. It looked like this:</p>
+
+<pre><code class="highlight plaintext">X-Signature: sha1=&lt;hexdigest of sha1 hmac&gt;
+</code></pre>
+
+<p>The HMAC would be built with just the content of the request (i.e., no headers, no query params) and a secret key. <a href="http://pubsubhubbub.googlecode.com/svn/trunk/pubsubhubbub-core-0.3.html#authednotify">This was borrowed directly from the PubSubHubbub spec</a>, but the general idea of using HMAC to sign callback requests has become pretty standard in the world of webhooks. Here are details on how <a href="http://code.google.com/p/support/wiki/PostCommitWebHooks#Authentication">Google</a> and <a href="http://www.twilio.com/docs/security#validating-requests">Twilio</a> use them.</p>
+
+<p>Each of these providers is using their own header for basically the same use case. It would seem like there is an opportunity to standardize on a common header format for it. There's been a number of proposals for a general Signature header to sign an entire request. There was a fairly comprehensive one proposed called <a href="http://tools.ietf.org/html/draft-burke-content-signature-00">Content-Signature</a>. With signing, the difficulty is often getting the input string correct. Most signing mechanisms need to normalize their input. If you've ever had to deal with OAuth or AWS signatures, you'll know what I'm talking about. With request signing, the headers pose a particularly tricky situation with signing since they often change as the request goes through proxies.</p>
+
+<p>The idea of Content-HMAC is to focus on a simpler goal of signing just the content payload, since it's normally treated as-is, and is not altered when going through proxies. The X-Signature proposal I had was a decent one, as is almost any cowpath-based proposal, but I realized it would probably be a good idea to limit the implied scope to what it's really doing: providing an HMAC for request (or response) content.</p>
+
+<p>It turns out there's a similar header that's not used that often anymore called Content-MD5. It was a simple mechanism to provide an MD5 digest of the content. My current proposal is to take this existing pattern and apply it to HMAC, giving us the Content-HMAC header:</p>
+
+<pre><code class="highlight plaintext">Content-HMAC: &lt;hash mechanism&gt; &lt;base64 encoded binary HMAC&gt;
+</code></pre>
+
+<p>Here's an example:</p>
+
+<pre><code class="highlight plaintext">Content-HMAC: sha1 f1wOnLLwcTexwCSRCNXEAKPDm+U=
+</code></pre>
+
+<p>This proposal borrows its naming convention from Content-MD5, but the format is more similar to Authorization. The Authorization header allows multiple authorization schemes to be used. You define the scheme followed by a space and then the actual authorization data. Since HMAC allows different hashing techniques to be used, we use that pattern here to let you specify the hashing technique. We also take the existing pattern of base64 encoding used in several HTTP headers to make it conform even more to existing standards. </p>
+
+<p>Content-HMAC was created for callback requests, but it's a useful way to sign any HTTP request or response payload. For requests, it's worth mentioning it only applies when there is a content payload, so for example it's meaningless with GET requests. </p>
+
+<p>It's also very worth mentioning that the need for content signing is unnecessary when using HTTPS. It currently looks like the future will eventually be 100% SSL encrypted HTTP, but until then, there will always be situations where HTTPS is not available. Content-HMAC is perhaps a stop-gap until we reach that ideal. Until then, I think Content-HMAC is a good, standard way to add authorization to callback requests.</p>
+
+<p>Let me know if you have any questions or feedback on this proposal. Further discussion is likely to happen on the <a href="https://groups.google.com/forum/#!forum/webhooks">Webhooks Google Group</a>.</p>
+
+          </article>
+          <br /><a href="/blog/2012/12/17/http-signatures-with-content-hmac/#disqus_thread">Comments</a>
+        </div>
+    </div>
+</div>
+</section>
+<section  class="alternate">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">Dec</span>
+                    <span class="day">15</span>
+                    <span class="year">2012</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking/">Avoiding environmental fallacy with systems thinking</a></h1>
+            <p>In 1905, German chemist Alfred Einhorn invented Novocaine to be used by doctors in surgery as a general anesthetic. Unfortunately, doctors didn't find Novocaine to be a suitable general anesthetic. However, dentists were dying to use it as a <em>local</em> anesthetic. The inventor didn't want to sell it for the "mundane purpose" of drilling teeth, so he continued marketing to doctors and surgeons. Einhorn persisted until his death, unwilling to let the market dictate the use of his invention. He felt the intrinsic value of Novocaine as a general anesthetic was enough to sell it as such, no matter what extrinsic value was placed on it by actual market demands. Charles West Churchman would call this an "environmental fallacy."</p>
+
+<p>Environmental fallacy is the blunder of ignoring or not understanding the effects of the environment of a system. Examples of this fallacy are all around us. Anti-drug legislation fails to see long-term, societal implications because they're preoccupied by the immediate, localized problems. Efforts to improve a standardized public education are precisely and meticulously solving the wrong problem. Silicon Valley startups spend our brightest intellectual resources on photo sharing and social-whatever, while industries that affect the quality of living for millions are left with bureaucrats.</p>
+
+<p>One could describe these all as failing to see the bigger picture. In systems we call this the environment of a system. The significance of which is governed by the principle of openness.</p>
+
+<p>Openness is the principle that open systems, which includes everything from problems to corporations to opinions to products, can only be understood in the context of their environment. This is because open systems are dependent on and co-determined by their context. A closed system, like a watch or a hammer, can function entirely based on its own internal structure and process. An open system interacts with and is inextricably linked with its environment.</p>
+
+<center><img src="/images/content/open_vs_closed_sys.png" title="Open systems vs Closed systems" /></center>
+
+<p>This insight may seem banal. In fact, the younger generations and the progressive recent generations are quite familiar with this concept at least as a vague intuition. But this is a very recent development. We don't appreciate how little this idea was understood for basically all of human existence up until just a few decades ago. </p>
+
+<p>Science, for example. Science is our greatest effort to understand our objective reality. Like any other open system, it was defined and limited by the context of its time. As modern science began to develop 350 years ago, it was based on a worldview that denied the principle of openness. Most subjects were studied as closed systems.</p>
+
+<p>For the greater part of its life, science has only understood the environment as something to be minimized. This is best shown in laboratories, a symbol of scientific activity, which are specifically designed to exclude the environment. Based on the doctrines of determinism and reductionism, science up until the last 4 or 5 decades has ignored the environment in favor of reductionist explanations focused on internal determinism. At best this only partially describes most actual phenomenon. For example, Galileo's equations for freely falling bodies completely ignore air resistance and the rotation of Earth, and Ohm's law assumes there will be no dramatic change in surrounding temperature. In both cases, the assumption is no environment.</p>
+
+<p>This understated handicap of traditional science ended up as the major dilemma in the 1992 film Medicine Man. Sean Connery's character finds a miracle cure for cancer in a flower, but in the lab he's unable to reproduce it. He eventually finds out the flower itself was not the cure, but that the cure was produced by the flower interacting with another element in its environment. The unintentional moral of the story is about the significance of environment and environmental fallacy.</p>
+
+<p>Only until ecology took off in the mid-20th century did we have a science that explicitly observed the environment, though primarily as a subset of biology. In many ways, ecology was a precursor to systems sciences. The difference between an ecological environment and the environment of a system is that a system environment is more general. It can be used to talk about physical environments, but also abstract environments, such as decision-making and problem-solving environments.</p>
+
+<p>Often the environment refers to all external variables and conditions of a system, but in some cases it might refer to a particular part of the total environment. This is because the environment represents any surrounding system. Any one open system is embedded in a greater system, embedded in an even greater system, and so on. For example, one slice of how nested environments can affect an individual at work might look like this:</p>
+
+<p><img src="/images/content/nested_environments.png" title="Nested environments" style="float: left;" /></p>
+
+<p>If all of these layers influence each other, you start to realize, maybe somewhat helplessly, that everything depends on everything else. No wonder science originally dismissed the environment. But ignoring the complexities and dynamics of open systems leads to sometimes serious disparities from reality. </p>
+
+<p>In 1850, which for historical context was when California became a state and the US got its 13th president, the leading scientists of the western world convened for a conference in Europe. They actually concluded that in just 50 years, through science, they would have a complete understanding of the universe. This absurd notion stemmed from the foundations of scientific thought, which been tremendously useful, but also severely limiting. Only after the Heisenberg principle in the late 1920's have we begun to accept that reality is just too complicated to fully understand at once.</p>
+
+<p>Ironically, admitting this has been beneficial to our grasp of reality. It's helped us realize new frameworks for thinking and coping with our increasingly complex and interdependent world. Luckily, our world is so globalized and connected today that modern generations are growing up with this reality as a daily experience. Systems theory and systems thinking are tools that can keep the appreciation of openness and the defining power of context as a first class tenet in all our endeavors. </p>
+
+          </article>
+          <br /><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking/#disqus_thread">Comments</a>
+        </div>
+    </div>
+</div>
+</section>
+<section >
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">Dec</span>
+                    <span class="day">06</span>
+                    <span class="year">2012</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2012/12/06/async-http-responses-with-response-redirection/">Async HTTP Responses with Response Redirection</a></h1>
+            <p>What if you could perform any HTTP request, but get the response back via a webhook? This is the simple goal of Response Redirection, a simple micro-protocol for telling an HTTP server to send the response to a URL. Instead of returning the response in the connection created by the request, the response is returned in HTTP callback fashion.</p>
+
+<p>The primary use case for this is handling HTTP responses that take longer than you would prefer to keep an open connection. As we build APIs that start interacting with the real world and human processes, you could expect operations that might take hours to days to complete. </p>
+
+<h3 id="example-of-response-redirection">Example of Response Redirection</h3>
+
+<p>Response Redirection is done by performing a regular HTTP request with two additions: a Pragma directive telling the server you want the response to be redirected, and a Callback to be used for the response.</p>
+
+<pre><code class="highlight plaintext">GET /helloworld HTTP/1.1
+Host: example.com
+Pragma: redirect
+Callback: &lt;http://server.com/callback&gt;; method="post"; rel="redirect"
+</code></pre>
+
+<p>The response to this is a 202 Accepted or an appropriate error code. 202 Accpted is the standard response to give for operations that have been accepted and will be processed or finished later. As soon as the server as processed the request and has rendered a response, it would perform a request:</p>
+
+<pre><code class="highlight plaintext">POST /callback HTTP/1.1
+Host: server.com
+Status: 200 OK
+Content-Length: 11
+Content-Type: text/plain
+
+Hello world
+</code></pre>
+
+<p>As we talked about with the <a href="http://progrium.com/blog/2012/11/26/x-callback-header-an-evented-web-building-block/">Callback header</a>, if a <code>secret</code> parameter was given, it would imply that an HMAC signature be provided in the callback request. We'll revisit this again in another post. </p>
+
+<p>If the server doesn't understand <code>Pragma: redirect</code>, it would return a normal response to the initial request and the client would have to handle it as usual.</p>
+
+<h3 id="using-pragma">Using Pragma</h3>
+
+<p>You'll notice we didn't invent a header to tell the server to we want to do Response Redirection. You may remember Pragma's original use was only for <code>Pragma: no-cache</code> and was eventually replaced with other cache control headers. However, the semantics of Pragma remain useful. To quote the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">HTTP 1.1 spec</a>:</p>
+
+<blockquote>
+  <p>The Pragma general-header field is used to include implementation-specific directives that might apply to any recipient along the request/response chain.</p>
+</blockquote>
+
+<p>Another potential header field would be the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.20">Expect header</a>. The Expect header is designed to let the client specify certain behaviors expected of the server. This would be perfect except for this property:</p>
+
+<blockquote>
+  <p>The Expect mechanism is hop-by-hop: that is, an HTTP/1.1 proxy MUST return a 417 (Expectation Failed) status if it receives a request with an expectation that it cannot meet.</p>
+</blockquote>
+
+<p>In today's world, this renders it useless unless we were talking about changing the behavior of proxies. The Pragma header was designed to be forwarded by proxies and ignored if it doesn't know how to fulfill the directive. </p>
+
+<h3 id="alternate-implementation">Alternate Implementation</h3>
+
+<p>In the discussion that followed the Callback header post, not only did we learn that the <code>X-</code> header prefix <a href="http://tools.ietf.org/html/rfc6648">is now deprecated</a>, but there is an RFC draft called <a href="http://tools.ietf.org/html/draft-snell-http-prefer-17">Prefer Header for HTTP</a>.</p>
+
+<p>It actually addresses the issue with the Expect header, providing an alternative for specifying optional preferences for how the server handles a request. One of the example preferences is for returning the response asynchronously, which is exactly what we're achieving with Response Redirection. The only missing element is the callback, which we can easily include with our Callback header. Here we augment an example directly from the spec:</p>
+
+<pre><code class="highlight plaintext">POST /collection HTTP/1.1
+Host: example.org
+Content-Type: text/plain
+Prefer: respond-async
+Callback: &lt;http://server.com/callback&gt;; rel="respond-async"
+
+{Data}
+</code></pre>
+
+<p>The server would respond with 202 Accepted, just as we would have had with the Pragma implementation. It's up for discussion which implementation is ideal.</p>
+
+<h3 id="last-thoughts">Last Thoughts</h3>
+
+<p>Granted, there are likely better ways to approach the use case we described at the beginning. Creating a resource immediately and subscribing to state changes might actually be ideal. Perhaps the Response Redirection spec is purely academic. That brings us again to the idea of HTTP Subscriptions, which I'll get to posting about soon. </p>
+
+<p>However, Response Redirection is a great example of a simple protocol built on top of the Callback header. The use of Prefer and Pragma will also set the stage for the design decisions of my initial informal draft of HTTP Subscriptions. It will continue this trend of reusing existing pieces of technology (Pragma, Expect, Prefer, Callback) as building blocks that, from my perspective, were intended to be re-combined to achieve new behavior.</p>
+
+<p>Let me know what you think in the comments or in the <a href="https://groups.google.com/forum/#!forum/webhooks">Webhooks Google Group</a>.</p>
+
+          </article>
+          <br /><a href="/blog/2012/12/06/async-http-responses-with-response-redirection/#disqus_thread">Comments</a>
+        </div>
+    </div>
+</div>
+</section>
+
+
+<section class="alternate">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12"> 
+        <ul class="pager article">
+          <li class="previous">
+            <a href="/blog/page3/">&larr; Older</a>
+          </li>
+        
+          <li class="next">
+            <a href="/blog/">Newer &rarr;</a>
+          </li>
+        </ul>
+        </div>
+    </div>
+</div>
+</section>
+
+    </main>
+    
+    <!--aside>
+      <h2>Recent Articles?</h2>
+      <ol>
+          <li><a href="/blog/2014/02/06/the-start-of-the-age-of-flynn/">The Start of the Age of Flynn</a> <span>Feb  6</span></li>
+          <li><a href="/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation/">Viewdocs: Hosted Markdown project documentation (finally!)</a> <span>Nov 13</span></li>
+          <li><a href="/blog/2013/08/18/hacker-dojo-community-trading-zone/">Hacker Dojo: Community Trading Zone</a> <span>Aug 18</span></li>
+          <li><a href="/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen/">Dokku: The smallest PaaS implementation you've ever seen</a> <span>Jun 19</span></li>
+          <li><a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls/">Executable Tweets and Programs in Short URLs</a> <span>Jan  5</span></li>
+          <li><a href="/blog/2013/01/01/where-did-localtunnel-come-from/">Where did Localtunnel come from?</a> <span>Jan  1</span></li>
+          <li><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta/">Localtunnel v2 available in beta</a> <span>Dec 25</span></li>
+          <li><a href="/blog/2012/12/17/http-signatures-with-content-hmac/">HTTP Signatures with Content-HMAC</a> <span>Dec 17</span></li>
+          <li><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking/">Avoiding environmental fallacy with systems thinking</a> <span>Dec 15</span></li>
+          <li><a href="/blog/2012/12/06/async-http-responses-with-response-redirection/">Async HTTP Responses with Response Redirection</a> <span>Dec  6</span></li>
+      </ol>
+
+      <h2>Tags</h2>
+      <ol>
+      </ol>
+
+      <h2>By Year</h2>
+      <ol>
+          <li><a href="/blog/2014/">2014 (1)</a></li>
+          <li><a href="/blog/2013/">2013 (5)</a></li>
+          <li><a href="/blog/2012/">2012 (8)</a></li>
+          <li><a href="/blog/2010/">2010 (3)</a></li>
+          <li><a href="/blog/2009/">2009 (5)</a></li>
+          <li><a href="/blog/2007/">2007 (1)</a></li>
+      </ol>
+    </aside-->
+
+    <footer>
+      <div class="container clearfix">
+        &copy; 2014 Jeff Lindsay, Progrium Labs
+      </div>
+    </footer>
+
+  </div>
+  <script src="/javascripts/all.js" type="text/javascript"></script>
+  </body>
+</html>
