@@ -35,6 +35,76 @@
           <article>
             <div class="meta">
                 <div class="date">
+                    <span class="month">Jul</span>
+                    <span class="day">01</span>
+                    <span class="year">2014</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2014/07/01/beyond-flynn-or-flynn-as-a-worldview/">Beyond Flynn, or Flynn-as-a-Worldview</a></h1>
+            <p>About five months ago, I finally <a href="http://progrium.com/blog/2014/02/06/the-start-of-the-age-of-flynn/">wrote about Flynn</a>, a project started almost a year ago, but as I described was in the making for much longer. I wanted to give an update on where I am today and set the stage for some upcoming posts on what I've been working on and what I've been learning.</p>
+
+<p>Lots has happened in five months, but first I want to talk about Flynn. There's been some confusion, so I should probably clarify that while I did help start and co-architect Flynn, it's not actually a project of mine. Jonathan and Daniel have been very considerate in allowing me to share ownership conceptually and architecturally, and they treated me as an equal partner as long as they could afford me, but technically I never was. This isn't a problem, it's just a little confusing to some. </p>
+
+<p>Ultimately, it doesn't matter because Flynn is open source and they're going out of their way to protect the integrity of the project as open source. That's actually why I'm not in the Github organization. The project has rules about maintainers meeting an ongoing contribution requirement. Since I lost the means to work on Flynn in January, I no longer met that requirement, so I'm not listed as a maintainer.</p>
+
+<p>Anyway, what's exciting to me are the ideas and ideals of Flynn architecturally. This is why I've continued to give talks about Flynn at conferences. While the initial goal of Flynn was to be an open source PaaS, the actual scope of Flynn was quite open-ended from there. This is because Flynn is about a new paradigm of infrastructure. </p>
+
+<p>This new paradigm is what's been in the making for so long. It's the reason I collaborated with dotCloud on Docker, and it's the motivation behind most of my work recently, including Flynn. This paradigm is ultimately what I'm interested in figuring out and building. It's more than Docker, it's beyond Flynn. It's an ecosystem of projects that align with this worldview, that nobody owns, and maybe for the time has no name. But at least people are now starting to see it coming.</p>
+
+<p>For the time, Flynn is the closest thing to embody this paradigm. But there are others like <a href="https://coreos.com">CoreOS</a>, and even <a href="http://deis.io">Deis</a> have aspirations towards this ideal. While my work is very likely to feed back into Flynn, I'm not specifically working on Flynn. It's more like R&amp;D for Flynn and Deis and even Docker itself, forging ahead to bring us closer to this world I've been imagining for quite a while.</p>
+
+<p>Alright, so what have I been working on? What's happened since February?</p>
+
+<p>Not long after my last post, I decided to explore an opportunity working with <a href="http://www.digitalocean.com">DigitalOcean</a>. The general premise being, "they want to build some kind of platform layer on top of their VMs, and I can help them build that platform" using Flynn or whatever makes most sense. It seemed like a good vehicle to continue the work I had started, and work with an amazing team and great brand to take it even further.</p>
+
+<p>As a warm-up / get-acquainted project, I decided to take on re-designing the DigitalOcean API. I drafted an initial API design, pushed it through reviews, set up infrastructure for docs and public feedback, and generally got everything moving. Eventually it was handed off since I was not getting anything else done. That API <a href="https://www.digitalocean.com/company/blog/api-v2-enters-public-beta/">entered public beta</a> last week. </p>
+
+<p>What we learned in that time, however, was that in the growth chaos that is DigitalOcean's success, DigitalOcean was not clear on what they wanted in terms of an application platform layer. And at the time there weren't enough resources to allocate to it when there was plenty to be done with their existing cloud infrastructure. We came to an arrangement to put my employment on hold as a leave of absence for several months, coupled with sponsorship of my open source work in this space. </p>
+
+<p>I'm absolutely thankful for this since otherwise I would not be making any progress towards this vision. Instead, I'd probably become that bitter early innovator that would have to leave the industry to avoid the pain of seeing only a shadow of what could have been…</p>
+
+<p>As of right now, the sponsorship is a little past half over. I've been working on as much as I can in this time, but I think now would be a good time to start sharing it all with more context. If you follow me on Twitter or Github, there's been a lot of activity, and some projects have better documentation than others. I'm going to start explaining them in blog posts and hopefully that will also help convey this paradigm of tooling I'm after.</p>
+
+<p>For now, here are links to a few of the projects built and released in this time:</p>
+
+<ul>
+  <li><a href="https://github.com/progrium/logspout">progrium/logspout</a></li>
+  <li><a href="https://github.com/progrium/busybox">progrium/busybox</a></li>
+  <li><a href="https://github.com/progrium/execd">progrium/execd</a></li>
+  <li><a href="https://github.com/progrium/configurator">progrium/configurator</a></li>
+  <li><a href="https://github.com/progrium/nginx-appliance">progrium/nginx-appliance</a></li>
+  <li><a href="https://github.com/progrium/ambassadord">progrium/ambassadord</a></li>
+  <li><a href="https://github.com/progrium/docker-consul">progrium/docker-consul</a></li>
+  <li><a href="https://github.com/progrium/docksul">progrium/docksul</a></li>
+</ul>
+
+<p>Lastly, Flynn is still in active development towards a stable release since their <a href="https://flynn.io/blog/flynn-preview-release">preview release in April</a>. I still contribute here and there and stay in touch with those guys. I also stay in touch with Deis, CoreOS, and more recently the Hashicorp guys. Really I talk to everybody and anybody doing anything vaguely related to what I'm after because it's important we're all moving in roughly the same direction, and I can only build on the shoulders of giants.</p>
+
+          </article>
+          <a href="/blog/2014/07/01/beyond-flynn-or-flynn-as-a-worldview/#disqus_thread">Comments</a>
+          <br /><br />
+        </div>
+        
+        <div class="col-lg-3" id="sidebar">
+    <img src="/images/jeffphoto.gif" id="photo" title="Jeff Lindsay" />
+    <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
+    <h5><a href="http://twitter.com/progrium"><i class="fa fa-twitter-square fa-2x"></i>Twitter</a></h5>
+    <h5><a href="http://github.com/progrium"><i class="fa fa-github fa-2x"></i>Github</a></h5>
+    <h5><a href="http://linkedin.com/in/progrium"><i class="fa fa-linkedin-square fa-2x"></i>LinkedIn</a></h5>
+    <h5><a href="http://gittip.com/progrium"><i class="fa fa-gittip fa-2x"></i>Gittip</a></h5>
+</div>
+    </div>
+</div>
+</section>
+
+
+<section  class="alternate">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
                     <span class="month">Feb</span>
                     <span class="day">06</span>
                     <span class="year">2014</span>
@@ -133,23 +203,11 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
 
           </article>
           <a href="/blog/2014/02/06/the-start-of-the-age-of-flynn/#disqus_thread">Comments</a>
-          <br /><br />
         </div>
-        
-        <div class="col-lg-3" id="sidebar">
-    <img src="/images/jeffphoto.gif" id="photo" title="Jeff Lindsay" />
-    <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
-    <h5><a href="http://twitter.com/progrium"><i class="fa fa-twitter-square fa-2x"></i>Twitter</a></h5>
-    <h5><a href="http://github.com/progrium"><i class="fa fa-github fa-2x"></i>Github</a></h5>
-    <h5><a href="http://linkedin.com/in/progrium"><i class="fa fa-linkedin-square fa-2x"></i>LinkedIn</a></h5>
-    <h5><a href="http://gittip.com/progrium"><i class="fa fa-gittip fa-2x"></i>Gittip</a></h5>
-</div>
     </div>
 </div>
 </section>
-
-
-<section  class="alternate">
+<section >
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -182,7 +240,7 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
     </div>
 </div>
 </section>
-<section >
+<section  class="alternate">
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -232,7 +290,7 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
     </div>
 </div>
 </section>
-<section  class="alternate">
+<section >
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -268,231 +326,6 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
     </div>
 </div>
 </section>
-<section >
-<div class="container">
-    <div class="row">
-        <div class="col-lg-9"> 
-          <article>
-            <div class="meta">
-                <div class="date">
-                    <span class="month">Jan</span>
-                    <span class="day">05</span>
-                    <span class="year">2013</span>
-                </div>
-            </div>
-            <h1><a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls/">Executable Tweets and Programs in Short URLs</a></h1>
-            <p>A few weeks ago I was completely consumed for
-the better part of a day that I would have otherwise spent on more practical
-work.</p>
-
-<blockquote class="twitter-tweet tw-align-center"><p>Let's reflect. On a whim, I spent 6 hours writing programs that live in URL shorteners to create installable programs from Tweets.</p>&mdash; Jeff Lindsay (@progrium) <a href="https://twitter.com/progrium/status/279118756561711104" data-datetime="2012-12-13T07:01:11+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<p>Yeah, what? Weird, right? It started from a Twitter conversation earlier that day with my friend Joel:</p>
-
-<blockquote class="twitter-tweet tw-align-center"><p>$ for app in `heroku apps | grep -v '='`; do echo <a href="https://twitter.com/search/$app">$app</a>; heroku ps --app <a href="https://twitter.com/search/$app">$app</a>; done # how to figure out what you have running on heroku</p>&mdash; Joël Franusic (@jf) <a href="https://twitter.com/jf/status/279030460674347008" data-datetime="2012-12-13T01:10:20+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279030460674347008"><p>@<a href="https://twitter.com/jf">jf</a> reminds me of yet another app i need to build</p>&mdash; Jeff Lindsay (@progrium) <a href="https://twitter.com/progrium/status/279030609345667072" data-datetime="2012-12-13T01:10:56+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279030609345667072"><p>@<a href="https://twitter.com/progrium">progrium</a> I just wrote and launched a "client side" "bash app" right there. Bam.</p>&mdash; Joël Franusic (@jf) <a href="https://twitter.com/jf/status/279031831809097728" data-datetime="2012-12-13T01:15:47+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279031831809097728"><p>@<a href="https://twitter.com/jf">jf</a> app tweets. an app in a tweet.</p>&mdash; Jeff Lindsay (@progrium) <a href="https://twitter.com/progrium/status/279032107265839104" data-datetime="2012-12-13T01:16:53+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279032107265839104"><p>@<a href="https://twitter.com/progrium">progrium</a> $ apptweet install id:279030460674347008</p>&mdash; Joël Franusic (@jf) <a href="https://twitter.com/jf/status/279032681373790208" data-datetime="2012-12-13T01:19:10+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<p>This wishful brainstorming inspired me to start building exactly that.
-But first, a digression.</p>
-
-<p>The idea reminded me of an idea I got from <a href="https://twitter.com/rndmcnlly">Adam
-Smith</a> back when I was working on
-Scriptlets. If you can execute code from a URL, you could "store" a
-program in a shortened URL. I decided to combine this with the
-curl-pipe-bash technique that's been starting to get popular to
-bootstrap installs. If you're unfamiliar, take this Gist of a Bash
-script:</p>
-
-<script src="https://gist.github.com/4464431.js"> </script>
-
-<p>Given the "view raw" URL for that Gist, you can curl it and pipe it into Bash to
-execute it right there in your shell. It would look like this:</p>
-
-<pre><code class="highlight plaintext">$ curl -s https://gist.github.com/raw/4464431/gistfile1.txt | bash
-Hello world
-</code></pre>
-
-<p>Instead of having Gist store the program, how could we make it so the
-source would just live within the URL? Well in the case of
-curl-pipe-bash, we just need that source to be returned in the body of a
-URL. So I built a simple app to run on Heroku that takes the query
-string and outputs it in the body, a sort of echo service. </p>
-
-<script src="https://gist.github.com/4464442.js"> </script>
-
-<p>Letting you do this:</p>
-
-<pre><code class="highlight plaintext">$ curl "http://queryecho.herokuapp.com?Hello+world"
-Hello world
-</code></pre>
-
-<p>Which you could conceal and shorten with a URL shortener, like Bitly. I
-prefer the j.mp domain Bitly has. And since they're just redirecting you to the
-long URL, you'd use the <code>-L</code> option in curl to make it follow redirects:</p>
-
-<pre><code class="highlight plaintext">$ curl -L http://j.mp/RyUN03
-Hello world
-</code></pre>
-
-<p>When you make a short URL from the bitly website, they conveniently make
-sure the query string is properly URL encoded. So if I just typed
-<code>queryecho.herokuapp.com/?echo "Hello world"</code> into bitly, it
-would give me a short URL with a properly URL encoded version of that
-URL that would return <code>echo "Hello world"</code>. This URL we could then curl-pipe into Bash:</p>
-
-<pre><code class="highlight plaintext">$ curl -Ls http://j.mp/VGgI3o | bash
-Hello world
-</code></pre>
-
-<p>See what's going on there? We wrote a simple Hello world program in Bash
-that effectively lives in that short URL. And we can run it with
-the curl-pipe-bash technique.</p>
-
-<p>Later in our conversation, Joel suggests an example "app tweet" that if
-executed in Bash given a URL argument, it would tell you where it
-redirects. So if you gave it a short URL, it would tell you the long
-URL.</p>
-
-<blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279032107265839104"><p>@<a href="https://twitter.com/progrium">progrium</a> $ echo "$1"; curl -IL --silent "$1" | grep Location | grep -o 'http.*' # this is a URL "unshortener"</p>&mdash; Joël Franusic (@jf) <a href="https://twitter.com/jf/status/279033679592951809" data-datetime="2012-12-13T01:23:08+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<p>Just so you know what it would look like, if you put that program in a
-shell script and ran it against a short URL that redirected to www.google.com, this is what you would see:</p>
-
-<pre><code class="highlight plaintext">$ ./unshortener.sh http://j.mp/www-google-com
-http://j.mp/www-google-com
-http://www.google.com/
-</code></pre>
-
-<p>It prints the URL you gave it and then resolves the URL and
-prints the long URL. Pretty simple. </p>
-
-<p>So I decided to put this program in a short URL. Here we have <a href="http://j.mp/TaHyRh">j.mp/TaHyRh</a> which will resolve to:</p>
-
-<pre><code class="highlight plaintext">http://queryecho.herokuapp.com/?echo%20%22$url%22;%20curl%20-ILs%20%22$url%22%20|%20grep%20Location%20|%20grep%20-o%20'http.*'
-</code></pre>
-
-<p>Luckily I didn't have to do all that URL encoding. I just pasted his
-code in after <code>queryecho.herokuapp.com/?</code> and bitly took care of it.
-What's funny is that this example program is made to run on short URLs,
-so when I told him about it, my example ran on the short URL that
-contained the program itself:</p>
-
-<pre><code class="highlight plaintext">$ curl -Ls http://j.mp/TaHyRh | url=http://j.mp/TaHyRh bash
-http://j.mp/TaHyRh
-http://queryecho.herokuapp.com/?echo "$url"; curl -ILs "$url" | grep Location | grep -o 'http.*'
-</code></pre>
-
-<p>You may have noticed my version of the program uses <code>$url</code> instead of
-<code>$1</code> because we have to use environment variables to provide input to
-curl-pipe-bash scripts. For reference, to run my URL script against the
-google.com short URL we made before, it would look like this:</p>
-
-<pre><code class="highlight plaintext">$ curl -Ls http://j.mp/TaHyRh | url=http://j.mp/www-google-com bash
-http://j.mp/www-google-com
-http://www.google.com/
-</code></pre>
-
-<p>Okay, so we can now put Bash scripts in short URLs. What happened to
-installing apps in Tweets? Building an <code>apptweet</code> program like Joel
-imagined would actually be pretty straightforward. But I wanted to build
-it in and install it with these weird programs-in-short-URLs. </p>
-
-<p>The first obstacle was figuring out how to get it to modify your current
-environment. Normally curl-pipe-bash URLs install a downloaded program
-into your <code>PATH</code>. But I didn't want to install a bunch of files on your
-computer. Instead I just wanted to install a temporary Bash function
-that would disappear when you leave your shell session. In order to do
-this, I had to do a variant of the curl-pipe-bash technique using eval:</p>
-
-<pre><code class="highlight plaintext">$ eval $(curl -Ls http://j.mp/setup-fetchtweet)
-$ fetchtweet 279072855206031360
-@jf you asked for it... Jeff Lindsay (@progrium) December 13, 2012
-</code></pre>
-
-<p>As you can see by inspecting that URL, it just defines a Bash function
-that runs a Python script from a Gist. I cheated and used Gist for some
-reason. That Python script uses the Twitter embed endpoint (same one
-used for the embedded Tweets in this post) to get the contents of a
-Tweet without authentication. </p>
-
-<p>The next thing I built installed and used fetchtweet
-to get a Tweet, parse it, put it in a Bash function named by the string
-after an <code>#exectweet</code> hashtag (which happens to also start a comment in Bash). So here we have a Tweet with a program in it:</p>
-
-<blockquote class="twitter-tweet tw-align-center"><p>echo Hello world <a href="https://twitter.com/search/%23exectweet">#exectweet</a> helloworld</p>&mdash; Jeff Lindsay (@progrium) <a href="https://twitter.com/progrium/status/279087620145958912" data-datetime="2012-12-13T04:57:28+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<p>To install it, we'd run this:</p>
-
-<pre><code class="highlight plaintext">$ id=279087620145958912 eval $(curl -Ls http://j.mp/install-tweet)
-Installed helloworld from Tweet 279087620145958912
-$ helloworld
-Hello world
-</code></pre>
-
-<p>We just installed a program from a Tweet and ran it! Then I wrapped this
-up into a command you could install. To install the installer. This time it would let you give it the URL to a Tweet:</p>
-
-<pre><code class="highlight plaintext">$ eval $(curl -Ls http://j.mp/install-exectweet) 
-Installed exectweet
-$ exectweet https://twitter.com/progrium/status/279087620145958912
-Installed helloworld from Tweet 279087620145958912
-$ helloworld
-Hello world
-</code></pre>
-
-<p>Where would I go from there? An app that calls itself into a loop, of course!</p>
-
-<blockquote class="twitter-tweet tw-align-center"><p>exectweet <a href="http://t.co/ri0XTprA" title="http://j.mp/recursive-app">j.mp/recursive-app</a> ; recursive-app <a href="https://twitter.com/search/%23exectweet">#exectweet</a> recursive-app</p>&mdash; Jeff Lindsay (@progrium) <a href="https://twitter.com/progrium/status/279123541054595074" data-datetime="2012-12-13T07:20:12+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<pre><code class="highlight plaintext">$ exectweet https://twitter.com/progrium/status/279123541054595074 &amp;&amp; recursive-app
-Installed recursive-app from Tweet 279123541054595074
-Installed recursive-app from Tweet 279123541054595074
-Installed recursive-app from Tweet 279123541054595074
-Installed recursive-app from Tweet 279123541054595074
-...
-</code></pre>
-
-<p>Obviously, this whole project was just a ridiculous, mind-bending exploration.
-I shared most of these examples on Twitter as I was making them. Here
-was my favorite response.</p>
-
-<blockquote class="twitter-tweet tw-align-center" data-in-reply-to="279087620145958912"><p>@<a href="https://twitter.com/progrium">progrium</a> End of the world, brought to you by Jeff Lindsay, via the Internet collapsing in on itself and taking the world with it.</p>&mdash; Matt Mechtley (@biphenyl) <a href="https://twitter.com/biphenyl/status/279088441084497922" data-datetime="2012-12-13T05:00:44+00:00">December 12, 2012</a></blockquote>
-<script src="//platform.twitter.com/widgets.js" charset="utf-8"> </script>
-
-<p>You may have noticed, it just happened to be 12/12/2012 that day.</p>
-
-<style type="text/css">
-.twitter-tweet-rendered {
-  clear: none!important;
-}
-.twt-reply {
-  display: none!important;
-}
-</style>
-
-
-          </article>
-          <a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls/#disqus_thread">Comments</a>
-        </div>
-    </div>
-</div>
-</section>
 
 
 <section class="alternate">
@@ -518,6 +351,7 @@ was my favorite response.</p>
     <!--aside>
       <h2>Recent Articles?</h2>
       <ol>
+          <li><a href="/blog/2014/07/01/beyond-flynn-or-flynn-as-a-worldview/">Beyond Flynn, or Flynn-as-a-Worldview</a> <span>Jul  1</span></li>
           <li><a href="/blog/2014/02/06/the-start-of-the-age-of-flynn/">The Start of the Age of Flynn</a> <span>Feb  6</span></li>
           <li><a href="/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation/">Viewdocs: Hosted Markdown project documentation (finally!)</a> <span>Nov 13</span></li>
           <li><a href="/blog/2013/08/18/hacker-dojo-community-trading-zone/">Hacker Dojo: Community Trading Zone</a> <span>Aug 18</span></li>
@@ -527,7 +361,6 @@ was my favorite response.</p>
           <li><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta/">Localtunnel v2 available in beta</a> <span>Dec 25</span></li>
           <li><a href="/blog/2012/12/17/http-signatures-with-content-hmac/">HTTP Signatures with Content-HMAC</a> <span>Dec 17</span></li>
           <li><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking/">Avoiding environmental fallacy with systems thinking</a> <span>Dec 15</span></li>
-          <li><a href="/blog/2012/12/06/async-http-responses-with-response-redirection/">Async HTTP Responses with Response Redirection</a> <span>Dec  6</span></li>
       </ol>
 
       <h2>Tags</h2>
@@ -536,7 +369,7 @@ was my favorite response.</p>
 
       <h2>By Year</h2>
       <ol>
-          <li><a href="/blog/2014/">2014 (1)</a></li>
+          <li><a href="/blog/2014/">2014 (2)</a></li>
           <li><a href="/blog/2013/">2013 (5)</a></li>
           <li><a href="/blog/2012/">2012 (8)</a></li>
           <li><a href="/blog/2010/">2010 (3)</a></li>
