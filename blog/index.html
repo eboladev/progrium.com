@@ -36,6 +36,57 @@
             <div class="meta">
                 <div class="date">
                     <span class="month">Jul</span>
+                    <span class="day">25</span>
+                    <span class="year">2014</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2014/07/25/building-the-future-with-docker/">Building the Future with Docker</a></h1>
+            <p>Before Docker, a handful of colleagues and I were dealing with a typical service-oriented system on EC2. It was typical in that it was quite far from ideal. Deploying components took too long. Getting new components in production was a nightmare. It was resource inefficient and harder to manage than it needed to be. It was big and complicated, and tightly-coupled in all the wrong places. It was hard to make changes to, especially removing legacy and broken code. Every component was different. Developers could only run a few components at a time locally, which was nothing like production. System-level integration testing was near impossible. On and on…</p>
+
+<p>We built and scaled individual components and solved individual problems to satisfy product requirements. As such, the company continued to be successful. But the system as a whole, which had the most influence on the developer and operator experience, was not improving fast enough to keep up.</p>
+
+<p>We sat down and started to just sketch out ideas of what an ideal system would look like. What would the perfect developer experience be like? How could you keep operators from falling into reactive mode? What would facilitate developers and operators to better work together? What infrastructure would you need to employ everything we knew to be best practice? What were large-scale systems like Google and Twitter doing for these that we weren't? How could you collapse these requirements into the simplest system possible?</p>
+
+<p>For the past three years, I've been focusing on building and refining that ideal system. The full picture is still only in my head, but over time it's been getting validated as new tools come out, either by me or by others. It's been further validated and refined as I talk and work with various companies, both providers and consumers in this space. </p>
+
+<p>It turns out the ideal involves a different way of thinking about systems than common system architecture and operations. Though, it's not <em>so</em> different from the way modern large-scale systems like Netflix and Google have evolved. The difference is in simplicity, orthogonality, and, most important, the overall experience design. </p>
+
+<p>I don't just have a system in mind, I have particular kind of experience with that system in mind. </p>
+
+<p>I played a very minor role in the creation and success of Docker. To me, it was the first necessary, and maybe most pivotal component in making a reasonable approximation of this ideal system. Docker doesn't solve every problem, but it's not supposed to. It is the meta-primitive needed to build the rest of the primitives for this system. Docker is huge, but it's just the foundation.</p>
+
+<p>I don't know how far I'll be able to take this obsessive drive to flesh out the rest of this ideal system. Luckily, I've found a lot of supporters that have sponsored my work in various ways. Without them, I would likely not even be working on these types of technologies.</p>
+
+<p>Anyway, a couple weeks ago <a href="http://www.centurylinklabs.com/the-future-of-docker/">CenturyLink Labs did an interview with me</a> that captures a slice of the specifics in what I'm talking about. It covers some history, but it also gets into my roadmap, which I'm hoping to share more details on in upcoming posts. The big milestone for me is Manifold. As a stepping stone, the project Consulate should have a big impact in the Docker community. Some of the other projects mentioned like Duplex and Configurator are also just as important to me. </p>
+
+<iframe width="640" height="360" src="//www.youtube.com/embed/aBgObyaNkdc" frameborder="0" allowfullscreen=""></iframe>
+
+          </article>
+          <a href="/blog/2014/07/25/building-the-future-with-docker/#disqus_thread">Comments</a>
+          <br /><br />
+        </div>
+        
+        <div class="col-lg-3" id="sidebar">
+    <img src="/images/jeffphoto.gif" id="photo" title="Jeff Lindsay" />
+    <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
+    <h5><a href="http://twitter.com/progrium"><i class="fa fa-twitter-square fa-2x"></i>Twitter</a></h5>
+    <h5><a href="http://github.com/progrium"><i class="fa fa-github fa-2x"></i>Github</a></h5>
+    <h5><a href="http://linkedin.com/in/progrium"><i class="fa fa-linkedin-square fa-2x"></i>LinkedIn</a></h5>
+    <h5><a href="http://gittip.com/progrium"><i class="fa fa-gittip fa-2x"></i>Gittip</a></h5>
+</div>
+    </div>
+</div>
+</section>
+
+
+<section  class="alternate">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">Jul</span>
                     <span class="day">01</span>
                     <span class="year">2014</span>
                 </div>
@@ -82,23 +133,11 @@
 
           </article>
           <a href="/blog/2014/07/01/beyond-flynn-or-flynn-as-a-worldview/#disqus_thread">Comments</a>
-          <br /><br />
         </div>
-        
-        <div class="col-lg-3" id="sidebar">
-    <img src="/images/jeffphoto.gif" id="photo" title="Jeff Lindsay" />
-    <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
-    <h5><a href="http://twitter.com/progrium"><i class="fa fa-twitter-square fa-2x"></i>Twitter</a></h5>
-    <h5><a href="http://github.com/progrium"><i class="fa fa-github fa-2x"></i>Github</a></h5>
-    <h5><a href="http://linkedin.com/in/progrium"><i class="fa fa-linkedin-square fa-2x"></i>LinkedIn</a></h5>
-    <h5><a href="http://gittip.com/progrium"><i class="fa fa-gittip fa-2x"></i>Gittip</a></h5>
-</div>
     </div>
 </div>
 </section>
-
-
-<section  class="alternate">
+<section >
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -207,7 +246,7 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
     </div>
 </div>
 </section>
-<section >
+<section  class="alternate">
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -240,7 +279,7 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
     </div>
 </div>
 </section>
-<section  class="alternate">
+<section >
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -290,42 +329,6 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
     </div>
 </div>
 </section>
-<section >
-<div class="container">
-    <div class="row">
-        <div class="col-lg-9"> 
-          <article>
-            <div class="meta">
-                <div class="date">
-                    <span class="month">Jun</span>
-                    <span class="day">19</span>
-                    <span class="year">2013</span>
-                </div>
-            </div>
-            <h1><a href="/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen/">Dokku: The smallest PaaS implementation you've ever seen</a></h1>
-            <p><a href="https://github.com/progrium/dokku">Dokku</a> is a mini-Heroku powered by Docker written in less than 100 lines of Bash. Once it's set up on a host, you can push Heroku-compatible applications to it via Git. They'll build using Heroku buildpacks and then run in isolated containers. The end result is your own, single-host version of Heroku.</p>
-
-<p>Dokku is under 100 lines because it's built out of several components that do most of the heavy lifting: Docker, Buildstep, and gitreceive.</p>
-
-<ul>
-  <li><a href="http://www.docker.io/">Docker</a> is a container runtime for Linux. This is a high-level container primitive that gives you a similar technology to what powers Heroku Dynos. It provides the heart of Dokku. </li>
-  <li><a href="https://github.com/progrium/buildstep">Buildstep</a> uses Heroku's open source buildpacks and is responsible for building the base images that applications are built on. You can think of it as producing the "stack" for Dokku, to borrow a concept from Heroku.</li>
-  <li><a href="https://github.com/progrium/gitreceive">Gitreceive</a> is a project that provides you with a git user that you can push repositories to. It also triggers a script to handle that push. This provides the push mechanism that you might be familiar with from Heroku. </li>
-</ul>
-
-<p>There are a few other projects being developed to support Dokku and expand its functionality without inflating its line count. Each project is independently useful, but I'll share more about these as they're integrated into Dokku.</p>
-
-<p>For now, here's a screencast that shows how to set up Dokku, along with a quick walk-through of the code.</p>
-
-<iframe src="http://player.vimeo.com/video/68631325" width="700" height="394" frameborder="0" webkitallowfullscreen="webkitAllowFullScreen" mozallowfullscreen="mozallowfullscreen" allowfullscreen="allowFullScreen">No iFrames?</iframe>
-
-
-          </article>
-          <a href="/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen/#disqus_thread">Comments</a>
-        </div>
-    </div>
-</div>
-</section>
 
 
 <section class="alternate">
@@ -351,6 +354,7 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
     <!--aside>
       <h2>Recent Articles?</h2>
       <ol>
+          <li><a href="/blog/2014/07/25/building-the-future-with-docker/">Building the Future with Docker</a> <span>Jul 25</span></li>
           <li><a href="/blog/2014/07/01/beyond-flynn-or-flynn-as-a-worldview/">Beyond Flynn, or Flynn-as-a-Worldview</a> <span>Jul  1</span></li>
           <li><a href="/blog/2014/02/06/the-start-of-the-age-of-flynn/">The Start of the Age of Flynn</a> <span>Feb  6</span></li>
           <li><a href="/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation/">Viewdocs: Hosted Markdown project documentation (finally!)</a> <span>Nov 13</span></li>
@@ -360,7 +364,6 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
           <li><a href="/blog/2013/01/01/where-did-localtunnel-come-from/">Where did Localtunnel come from?</a> <span>Jan  1</span></li>
           <li><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta/">Localtunnel v2 available in beta</a> <span>Dec 25</span></li>
           <li><a href="/blog/2012/12/17/http-signatures-with-content-hmac/">HTTP Signatures with Content-HMAC</a> <span>Dec 17</span></li>
-          <li><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking/">Avoiding environmental fallacy with systems thinking</a> <span>Dec 15</span></li>
       </ol>
 
       <h2>Tags</h2>
@@ -369,7 +372,7 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
 
       <h2>By Year</h2>
       <ol>
-          <li><a href="/blog/2014/">2014 (2)</a></li>
+          <li><a href="/blog/2014/">2014 (3)</a></li>
           <li><a href="/blog/2013/">2013 (5)</a></li>
           <li><a href="/blog/2012/">2012 (8)</a></li>
           <li><a href="/blog/2010/">2010 (3)</a></li>

@@ -35,6 +35,54 @@
           <article>
             <div class="meta">
                 <div class="date">
+                    <span class="month">Jun</span>
+                    <span class="day">19</span>
+                    <span class="year">2013</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen/">Dokku: The smallest PaaS implementation you've ever seen</a></h1>
+            <p><a href="https://github.com/progrium/dokku">Dokku</a> is a mini-Heroku powered by Docker written in less than 100 lines of Bash. Once it's set up on a host, you can push Heroku-compatible applications to it via Git. They'll build using Heroku buildpacks and then run in isolated containers. The end result is your own, single-host version of Heroku.</p>
+
+<p>Dokku is under 100 lines because it's built out of several components that do most of the heavy lifting: Docker, Buildstep, and gitreceive.</p>
+
+<ul>
+  <li><a href="http://www.docker.io/">Docker</a> is a container runtime for Linux. This is a high-level container primitive that gives you a similar technology to what powers Heroku Dynos. It provides the heart of Dokku. </li>
+  <li><a href="https://github.com/progrium/buildstep">Buildstep</a> uses Heroku's open source buildpacks and is responsible for building the base images that applications are built on. You can think of it as producing the "stack" for Dokku, to borrow a concept from Heroku.</li>
+  <li><a href="https://github.com/progrium/gitreceive">Gitreceive</a> is a project that provides you with a git user that you can push repositories to. It also triggers a script to handle that push. This provides the push mechanism that you might be familiar with from Heroku. </li>
+</ul>
+
+<p>There are a few other projects being developed to support Dokku and expand its functionality without inflating its line count. Each project is independently useful, but I'll share more about these as they're integrated into Dokku.</p>
+
+<p>For now, here's a screencast that shows how to set up Dokku, along with a quick walk-through of the code.</p>
+
+<iframe src="http://player.vimeo.com/video/68631325" width="700" height="394" frameborder="0" webkitallowfullscreen="webkitAllowFullScreen" mozallowfullscreen="mozallowfullscreen" allowfullscreen="allowFullScreen">No iFrames?</iframe>
+
+
+          </article>
+          <a href="/blog/2013/06/19/dokku-the-smallest-paas-implementation-youve-ever-seen/#disqus_thread">Comments</a>
+          <br /><br />
+        </div>
+        
+        <div class="col-lg-3" id="sidebar">
+    <img src="/images/jeffphoto.gif" id="photo" title="Jeff Lindsay" />
+    <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
+    <h5><a href="http://twitter.com/progrium"><i class="fa fa-twitter-square fa-2x"></i>Twitter</a></h5>
+    <h5><a href="http://github.com/progrium"><i class="fa fa-github fa-2x"></i>Github</a></h5>
+    <h5><a href="http://linkedin.com/in/progrium"><i class="fa fa-linkedin-square fa-2x"></i>LinkedIn</a></h5>
+    <h5><a href="http://gittip.com/progrium"><i class="fa fa-gittip fa-2x"></i>Gittip</a></h5>
+</div>
+    </div>
+</div>
+</section>
+
+
+<section  class="alternate">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
                     <span class="month">Jan</span>
                     <span class="day">05</span>
                     <span class="year">2013</span>
@@ -249,23 +297,11 @@ was my favorite response.</p>
 
           </article>
           <a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls/#disqus_thread">Comments</a>
-          <br /><br />
         </div>
-        
-        <div class="col-lg-3" id="sidebar">
-    <img src="/images/jeffphoto.gif" id="photo" title="Jeff Lindsay" />
-    <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
-    <h5><a href="http://twitter.com/progrium"><i class="fa fa-twitter-square fa-2x"></i>Twitter</a></h5>
-    <h5><a href="http://github.com/progrium"><i class="fa fa-github fa-2x"></i>Github</a></h5>
-    <h5><a href="http://linkedin.com/in/progrium"><i class="fa fa-linkedin-square fa-2x"></i>LinkedIn</a></h5>
-    <h5><a href="http://gittip.com/progrium"><i class="fa fa-gittip fa-2x"></i>Gittip</a></h5>
-</div>
     </div>
 </div>
 </section>
-
-
-<section  class="alternate">
+<section >
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -314,7 +350,7 @@ was my favorite response.</p>
     </div>
 </div>
 </section>
-<section >
+<section  class="alternate">
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -387,7 +423,7 @@ was my favorite response.</p>
     </div>
 </div>
 </section>
-<section  class="alternate">
+<section >
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -435,55 +471,6 @@ was my favorite response.</p>
     </div>
 </div>
 </section>
-<section >
-<div class="container">
-    <div class="row">
-        <div class="col-lg-9"> 
-          <article>
-            <div class="meta">
-                <div class="date">
-                    <span class="month">Dec</span>
-                    <span class="day">15</span>
-                    <span class="year">2012</span>
-                </div>
-            </div>
-            <h1><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking/">Avoiding environmental fallacy with systems thinking</a></h1>
-            <p>In 1905, German chemist Alfred Einhorn invented Novocaine to be used by doctors in surgery as a general anesthetic. Unfortunately, doctors didn't find Novocaine to be a suitable general anesthetic. However, dentists were dying to use it as a <em>local</em> anesthetic. The inventor didn't want to sell it for the "mundane purpose" of drilling teeth, so he continued marketing to doctors and surgeons. Einhorn persisted until his death, unwilling to let the market dictate the use of his invention. He felt the intrinsic value of Novocaine as a general anesthetic was enough to sell it as such, no matter what extrinsic value was placed on it by actual market demands. Charles West Churchman would call this an "environmental fallacy."</p>
-
-<p>Environmental fallacy is the blunder of ignoring or not understanding the effects of the environment of a system. Examples of this fallacy are all around us. Anti-drug legislation fails to see long-term, societal implications because they're preoccupied by the immediate, localized problems. Efforts to improve a standardized public education are precisely and meticulously solving the wrong problem. Silicon Valley startups spend our brightest intellectual resources on photo sharing and social-whatever, while industries that affect the quality of living for millions are left with bureaucrats.</p>
-
-<p>One could describe these all as failing to see the bigger picture. In systems we call this the environment of a system. The significance of which is governed by the principle of openness.</p>
-
-<p>Openness is the principle that open systems, which includes everything from problems to corporations to opinions to products, can only be understood in the context of their environment. This is because open systems are dependent on and co-determined by their context. A closed system, like a watch or a hammer, can function entirely based on its own internal structure and process. An open system interacts with and is inextricably linked with its environment.</p>
-
-<center><img src="/images/content/environmental-fallacy/open_vs_closed_sys.png" title="Open systems vs Closed systems" /></center>
-
-<p>This insight may seem banal. In fact, the younger generations and the progressive recent generations are quite familiar with this concept at least as a vague intuition. But this is a very recent development. We don't appreciate how little this idea was understood for basically all of human existence up until just a few decades ago. </p>
-
-<p>Science, for example. Science is our greatest effort to understand our objective reality. Like any other open system, it was defined and limited by the context of its time. As modern science began to develop 350 years ago, it was based on a worldview that denied the principle of openness. Most subjects were studied as closed systems.</p>
-
-<p>For the greater part of its life, science has only understood the environment as something to be minimized. This is best shown in laboratories, a symbol of scientific activity, which are specifically designed to exclude the environment. Based on the doctrines of determinism and reductionism, science up until the last 4 or 5 decades has ignored the environment in favor of reductionist explanations focused on internal determinism. At best this only partially describes most actual phenomenon. For example, Galileo's equations for freely falling bodies completely ignore air resistance and the rotation of Earth, and Ohm's law assumes there will be no dramatic change in surrounding temperature. In both cases, the assumption is no environment.</p>
-
-<p>This understated handicap of traditional science ended up as the major dilemma in the 1992 film Medicine Man. Sean Connery's character finds a miracle cure for cancer in a flower, but in the lab he's unable to reproduce it. He eventually finds out the flower itself was not the cure, but that the cure was produced by the flower interacting with another element in its environment. The unintentional moral of the story is about the significance of environment and environmental fallacy.</p>
-
-<p>Only until ecology took off in the mid-20th century did we have a science that explicitly observed the environment, though primarily as a subset of biology. In many ways, ecology was a precursor to systems sciences. The difference between an ecological environment and the environment of a system is that a system environment is more general. It can be used to talk about physical environments, but also abstract environments, such as decision-making and problem-solving environments.</p>
-
-<p>Often the environment refers to all external variables and conditions of a system, but in some cases it might refer to a particular part of the total environment. This is because the environment represents any surrounding system. Any one open system is embedded in a greater system, embedded in an even greater system, and so on. For example, one slice of how nested environments can affect an individual at work might look like this:</p>
-
-<p><img src="/images/content/environmental-fallacy/nested_environments.png" title="Nested environments" style="float: left;" /></p>
-
-<p>If all of these layers influence each other, you start to realize, maybe somewhat helplessly, that everything depends on everything else. No wonder science originally dismissed the environment. But ignoring the complexities and dynamics of open systems leads to sometimes serious disparities from reality. </p>
-
-<p>In 1850, which for historical context was when California became a state and the US got its 13th president, the leading scientists of the western world convened for a conference in Europe. They actually concluded that in just 50 years, through science, they would have a complete understanding of the universe. This absurd notion stemmed from the foundations of scientific thought, which been tremendously useful, but also severely limiting. Only after the Heisenberg principle in the late 1920's have we begun to accept that reality is just too complicated to fully understand at once.</p>
-
-<p>Ironically, admitting this has been beneficial to our grasp of reality. It's helped us realize new frameworks for thinking and coping with our increasingly complex and interdependent world. Luckily, our world is so globalized and connected today that modern generations are growing up with this reality as a daily experience. Systems theory and systems thinking are tools that can keep the appreciation of openness and the defining power of context as a first class tenet in all our endeavors. </p>
-
-          </article>
-          <a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking/#disqus_thread">Comments</a>
-        </div>
-    </div>
-</div>
-</section>
 
 
 <section class="alternate">
@@ -509,6 +496,7 @@ was my favorite response.</p>
     <!--aside>
       <h2>Recent Articles?</h2>
       <ol>
+          <li><a href="/blog/2014/07/25/building-the-future-with-docker/">Building the Future with Docker</a> <span>Jul 25</span></li>
           <li><a href="/blog/2014/07/01/beyond-flynn-or-flynn-as-a-worldview/">Beyond Flynn, or Flynn-as-a-Worldview</a> <span>Jul  1</span></li>
           <li><a href="/blog/2014/02/06/the-start-of-the-age-of-flynn/">The Start of the Age of Flynn</a> <span>Feb  6</span></li>
           <li><a href="/blog/2013/11/13/viewdocs-hosted-markdown-project-documentation/">Viewdocs: Hosted Markdown project documentation (finally!)</a> <span>Nov 13</span></li>
@@ -518,7 +506,6 @@ was my favorite response.</p>
           <li><a href="/blog/2013/01/01/where-did-localtunnel-come-from/">Where did Localtunnel come from?</a> <span>Jan  1</span></li>
           <li><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta/">Localtunnel v2 available in beta</a> <span>Dec 25</span></li>
           <li><a href="/blog/2012/12/17/http-signatures-with-content-hmac/">HTTP Signatures with Content-HMAC</a> <span>Dec 17</span></li>
-          <li><a href="/blog/2012/12/15/avoiding-environmental-fallacy-with-systems-thinking/">Avoiding environmental fallacy with systems thinking</a> <span>Dec 15</span></li>
       </ol>
 
       <h2>Tags</h2>
@@ -527,7 +514,7 @@ was my favorite response.</p>
 
       <h2>By Year</h2>
       <ol>
-          <li><a href="/blog/2014/">2014 (2)</a></li>
+          <li><a href="/blog/2014/">2014 (3)</a></li>
           <li><a href="/blog/2013/">2013 (5)</a></li>
           <li><a href="/blog/2012/">2012 (8)</a></li>
           <li><a href="/blog/2010/">2010 (3)</a></li>
