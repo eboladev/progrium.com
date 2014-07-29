@@ -36,6 +36,123 @@
             <div class="meta">
                 <div class="date">
                     <span class="month">Sep</span>
+                    <span class="day">30</span>
+                    <span class="year">2012</span>
+                </div>
+            </div>
+            <h1><a href="/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe/">Piping into and out of the cloud with skypipe</a></h1>
+            <p><a href="https://github.com/progrium/skypipe">Skypipe</a> is a magical command line tool that lets you easily pipe data across terminal sessions regardless of whether the sessions are on the same machine, across thousands of machines, or even behind a firewall. It gives you named pipes in the sky and lets you pipe data <em>anywhere</em>. </p>
+
+<p>I built it while on vacation the last couple months. I wasn't intending
+to write software while on my trip, but I just couldn't help myself.</p>
+
+<p>Skypipe is conceptually similar to named pipes or netcat, but with more power and a simpler interface. Here is a basic example using skypipe as you would a regular named pipe to gzip a file across shells:</p>
+
+<pre><code class="highlight plaintext">$ skypipe | gzip -9 -c &gt; out.gz
+</code></pre>
+
+<p>Your skypipe is now ready to receive some data from another shell process:</p>
+
+<pre><code class="highlight plaintext">$ cat file | skypipe
+</code></pre>
+
+<p>Unlike named pipes, however, <em>this will work across any machines connected to the Internet</em>. You don't have to specify a host address or set up "listen mode" like you would with netcat. In fact, unlike netcat, which is point to point, you could use skypipe for log aggregation. Here we'll used named skypipes. Run this on several hosts:</p>
+
+<pre><code class="highlight plaintext">$ tail -f /var/log/somefile | skypipe logs
+</code></pre>
+
+<p>Then run this on a single machine:</p>
+
+<pre><code class="highlight plaintext">$ skypipe logs &gt; /var/log/aggregate
+</code></pre>
+
+<p>This can also broadcast to multiple hosts. With the above, you can "listen in" by running this from your laptop, even while behind a NAT:</p>
+
+<pre><code class="highlight plaintext">$ skypipe logs
+</code></pre>
+
+<p>You can also temporarily store data or files in the pipe, even several files, until you pull them out. On one machine load some files into a named skypipe:</p>
+
+<pre><code class="highlight plaintext">$ cat file_a | skypipe files
+$ cat file_b | skypipe files
+</code></pre>
+
+<p>Now, from somewhere else, pull them out in order:</p>
+
+<pre><code class="highlight plaintext">$ skypipe files &gt; new_file_a
+$ skypipe files &gt; new_file_b
+</code></pre>
+
+<p>Lastly, you can use skypipe like the channel primitive in Go for coordinating between shell scripts. As a simple example, we'll use skypipe to wait for an event triggered by another script:</p>
+
+<pre><code class="highlight shell"><span class="c">#!/bin/bash</span>
+<span class="nb">echo</span> <span class="s2">"I'm going to wait until triggered"</span>
+skypipe trigger
+<span class="nb">echo</span> <span class="s2">"I was triggered!"</span>
+</code></pre>
+
+<p>Triggering is just sending an EOF over the pipe, causing the listening skypipe to terminate. We can do this with a simple idiom:</p>
+
+<pre><code class="highlight plaintext">$ echo | skypipe trigger
+</code></pre>
+
+<h3 id="how-does-this-magic-work">How does this magic work?</h3>
+
+<p>You'll need a free <a href="https://www.dotcloud.com/">Dotcloud</a> account to use skypipe, but you don't need to know anything about using Dotcloud to use skypipe. </p>
+
+<p>When you first use skypipe it will want you to run a setup command (<code>skypipe --setup</code>). This will deploy a very simple messaging server to Dotcloud. From then on, skypipe will use your account to transparently find and use this server, no matter where you are. The server is managed automatically and runs on Dotcloud free of charge, so you never need to think about it.</p>
+
+<h3 id="software-with-a-service">Software with a service!</h3>
+
+<p>This is a new paradigm of creating tools that transparently leverage the cloud to create magical experiences. It's not quite software as a service, it's software <em>with</em> a service. Nobody is using a shared, central server, and no one needs to setup or manage their own server. The <em>software</em> deploys and manages its own server for you.</p>
+
+<p>Thanks to platforms like Heroku and Dotcloud, we can now build software leveraging features of software as a service that is <em>packaged and distributed like normal open source software</em>.</p>
+
+<p>I'm excited to see what else can be done with this pattern. Naturally, I'm already thinking about a number of other potential uses.</p>
+
+<h3 id="using-skypipe-and-getting-involved">Using skypipe and getting involved</h3>
+
+<p>Skypipe is still an alpha piece of software. Be warned, there are some rough edges. That said, you can install skypipe with pip:</p>
+
+<pre><code class="highlight plaintext">$ pip install skypipe
+</code></pre>
+
+<p>The user experience is not yet entirely optimized. One of the biggest issues is that it needs to check for the server on every use. This can be done less often and cached, which would make it much snappier and on par with most command line utilities. </p>
+
+<p>This and a few other issues are already tracked in <a href="https://github.com/progrium/skypipe/issues">Github Issues</a>; feel free to take a whack at them. The codebase is intentionally small, documented, and written to be read, although there are no tests yet. </p>
+
+<p>The project also depends on ZeroMQ, which requires a C extension to be compiled. Even using the pyzmq-static package, you still need certain header files (python.h at the very least) to install skypipe, and not every environment has these. Ideally, I'd like to find a way to package skypipe in a way that includes all its dependencies. Perhaps <a href="http://www.pyinstaller.org/">PyInstaller</a> can help with this.</p>
+
+<p>Another feature I'm sure a lot of people will want (or complain about) is being able to run your own server and ignore the software with a service aspect. Since the server is packaged with the client, this is not far off from happening. Somebody just needs to make it happen. </p>
+
+<p>Contribution ideas aside, I'm hoping skypipe will be useful to others besides myself. I was really going for a magical tool. I think a big part of this magic is the use of software with a service, which I consider a bit novel in itself. What do you think?  </p>
+
+          </article>
+          <a href="/blog/2012/09/30/piping-into-and-out-of-the-cloud-with-skypipe/#disqus_thread">Comments</a>
+          <br /><br />
+        </div>
+        
+        <div class="col-lg-3" id="sidebar">
+    <img src="/images/jeffphoto.gif" id="photo" title="Jeff Lindsay" />
+    <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
+    <h5><a href="http://twitter.com/progrium"><i class="fa fa-twitter-square fa-2x"></i>Twitter</a></h5>
+    <h5><a href="http://github.com/progrium"><i class="fa fa-github fa-2x"></i>Github</a></h5>
+    <h5><a href="http://linkedin.com/in/progrium"><i class="fa fa-linkedin-square fa-2x"></i>LinkedIn</a></h5>
+    <h5><a href="http://gittip.com/progrium"><i class="fa fa-gittip fa-2x"></i>Gittip</a></h5>
+</div>
+    </div>
+</div>
+</section>
+
+
+<section  class="alternate">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-9"> 
+          <article>
+            <div class="meta">
+                <div class="date">
+                    <span class="month">Sep</span>
                     <span class="day">07</span>
                     <span class="year">2012</span>
                 </div>
@@ -84,23 +201,11 @@
 
           </article>
           <a href="/blog/2012/09/07/let-me-tell-you-about-my-website/#disqus_thread">Comments</a>
-          <br /><br />
         </div>
-        
-        <div class="col-lg-3" id="sidebar">
-    <img src="/images/jeffphoto.gif" id="photo" title="Jeff Lindsay" />
-    <p>Jeff Lindsay is a design-minded software architect and product engineer in Austin, Texas. Currently he consults and writes open source software focusing on next-gen platforms and infrastructure.</p>
-    <h5><a href="http://twitter.com/progrium"><i class="fa fa-twitter-square fa-2x"></i>Twitter</a></h5>
-    <h5><a href="http://github.com/progrium"><i class="fa fa-github fa-2x"></i>Github</a></h5>
-    <h5><a href="http://linkedin.com/in/progrium"><i class="fa fa-linkedin-square fa-2x"></i>LinkedIn</a></h5>
-    <h5><a href="http://gittip.com/progrium"><i class="fa fa-gittip fa-2x"></i>Gittip</a></h5>
-</div>
     </div>
 </div>
 </section>
-
-
-<section  class="alternate">
+<section >
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -146,7 +251,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...
     </div>
 </div>
 </section>
-<section >
+<section  class="alternate">
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -175,7 +280,7 @@ Port 8080 is now publicly accessible from http://8bv2.localtunnel.com ...
     </div>
 </div>
 </section>
-<section  class="alternate">
+<section >
 <div class="container">
     <div class="row">
         <div class="col-lg-9"> 
@@ -273,49 +378,6 @@ A developer in Japan started a Windows client based on Nio that we're planning t
     </div>
 </div>
 </section>
-<section >
-<div class="container">
-    <div class="row">
-        <div class="col-lg-9"> 
-          <article>
-            <div class="meta">
-                <div class="date">
-                    <span class="month">Dec</span>
-                    <span class="day">08</span>
-                    <span class="year">2009</span>
-                </div>
-            </div>
-            <h1><a href="/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker/">Hacker Dojo: place of the way of the hacker</a></h1>
-            <p>Two weeks ago it was being taped for a story on Fox News. One month ago it received a congratulatory visit from the mayor of Mountain View. Two months ago it was featured on <a href="http://www.flickr.com/photos/progrium/4017351989/">the front page</a> of the Mercury News. And four months ago was when we signed the lease for it. Hacker Dojo is officially on its way to something big.</p>
-
-<p><a href="http://hackerdojo.com">Hacker Dojo</a>, aspiring to be a global hub of innovation, is based on a simple idea: to provide a community center for hackers, thinkers and technologists to meet, discuss, learn and create.</p>
-
-<p>It's a non-profit, volunteer-run, member-supported operation that simply provides a space for hackers to do their thing 24/7, whether it's working on side projects, organizing a meetup, building the next startup, giving a class, working remotely, or just hanging out with diverse yet like-minded people. The thing they have in common is the hacker spirit, a force that drives ordinary but curious people to create what can end up being extraordinary, such as the personal computer, the first video game system, or the technology powering the Internet.</p>
-
-<p>A dojo is considered a place to do and train one's craft with others. It's most commonly used in the context of martial arts or other physical training. But the word "dojo" is simply defined as "place of the way." In the case of Hacker Dojo, that way is the way of the hacker.</p>
-
-<p>The hacker is not what most people think. Although 99% of the 100+ members of Hacker Dojo are capable of doing the things most people think "hackers" do, I'm 100% positive none of us have the intention of doing those things maliciously if at all. In fact, security has almost nothing to do with the way of the hacker. We define a hacker something like this:</p>
-
-<blockquote>
-  <p>A hacker is expert in their field, whether hobby or professional, that pushes the envelope of what's possible through hands-on exploration, driven by relentless curiosity and a desire to challenge the status quo.</p>
-</blockquote>
-
-<p>Steven Levy, author of <a href="http://www.amazon.com/Hackers-Computer-Revolution-Steven-Levy/dp/0141000511">Hackers: Heroes of the Computer Revolution</a>, describes computer hackers as people that "regard computing as the most important thing in the world." It's about passion. It's about something most of us can't even describe. It inexplicably compels us to explore technology. To build things. To learn things. To be like the heroes in our field and achieve the remarkable, which is something I think everybody can relate to.</p>
-
-<p>In fact, there is no reason why anybody shouldn't aspire to be like a hacker, an innovator. This is what Hacker Dojo is about. We want to foster hacker culture so it can grow, develop and spread. We want to make its values explicit, and be the "place of the way" of the hacker.</p>
-
-<p>If you still don't understand the hacker, or want to learn more, take a look at the <a href="http://en.wikipedia.org/wiki/Hacker_ethic">Hacker ethic article</a> on Wikipedia. There's also an excellent, short documentary available to watch online that shows you the energy and excitement of true hackers called <a href="http://www.youtube.com/view_play_list?p=906FF3F2339D0C70">Hackers: Wizards of the Electronic Age</a>.</p>
-
-<p>If you want to get involved in Hacker Dojo, come stop by or <a href="http://hackerdojo.com/">visit the website</a>! We hold many events at the Dojo, but it's also generally open for anybody to come and hack. If you're too far to come to us, you may find another <a href="http://en.wikipedia.org/wiki/Hackerspace">hackerspace</a> nearby. For example, in SF there is the excellent <a href="https://www.noisebridge.net/wiki/Noisebridge">Noisebridge</a> hackerspace.</p>
-
-<p>When you're this obsessed with technology, so much that most "normal" people have no idea what you're talking about, it helps to have a place where people don't think you're crazy. People have moved to Mountain View to be closer to Hacker Dojo. If you already live nearby, you should definitely take advantage of this place of the way of the hacker.</p>
-
-          </article>
-          <a href="/blog/2009/12/08/hacker-dojo-place-of-the-way-of-the-hacker/#disqus_thread">Comments</a>
-        </div>
-    </div>
-</div>
-</section>
 
 
 <section class="alternate">
@@ -341,6 +403,7 @@ A developer in Japan started a Windows client based on Nio that we're planning t
     <!--aside>
       <h2>Recent Articles?</h2>
       <ol>
+          <li><a href="/blog/2014/07/29/understanding-modern-service-discovery-with-docker/">Understanding Modern Service Discovery with Docker</a> <span>Jul 29</span></li>
           <li><a href="/blog/2014/07/25/building-the-future-with-docker/">Building the Future with Docker</a> <span>Jul 25</span></li>
           <li><a href="/blog/2014/07/01/beyond-flynn-or-flynn-as-a-worldview/">Beyond Flynn, or Flynn-as-a-Worldview</a> <span>Jul  1</span></li>
           <li><a href="/blog/2014/02/06/the-start-of-the-age-of-flynn/">The Start of the Age of Flynn</a> <span>Feb  6</span></li>
@@ -350,7 +413,6 @@ A developer in Japan started a Windows client based on Nio that we're planning t
           <li><a href="/blog/2013/01/05/executable-tweets-and-programs-in-short-urls/">Executable Tweets and Programs in Short URLs</a> <span>Jan  5</span></li>
           <li><a href="/blog/2013/01/01/where-did-localtunnel-come-from/">Where did Localtunnel come from?</a> <span>Jan  1</span></li>
           <li><a href="/blog/2012/12/25/localtunnel-v2-available-in-beta/">Localtunnel v2 available in beta</a> <span>Dec 25</span></li>
-          <li><a href="/blog/2012/12/17/http-signatures-with-content-hmac/">HTTP Signatures with Content-HMAC</a> <span>Dec 17</span></li>
       </ol>
 
       <h2>Tags</h2>
@@ -359,7 +421,7 @@ A developer in Japan started a Windows client based on Nio that we're planning t
 
       <h2>By Year</h2>
       <ol>
-          <li><a href="/blog/2014/">2014 (3)</a></li>
+          <li><a href="/blog/2014/">2014 (4)</a></li>
           <li><a href="/blog/2013/">2013 (5)</a></li>
           <li><a href="/blog/2012/">2012 (8)</a></li>
           <li><a href="/blog/2010/">2010 (3)</a></li>
