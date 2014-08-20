@@ -5,11 +5,127 @@
   <id>http://progrium.com/blog</id>
   <link href="http://progrium.com/blog"/>
   <link href="http://progrium.com/blog/atom.xml" rel="self"/>
-  <updated>2014-07-29T18:03:00-05:00</updated>
+  <updated>2014-08-20T15:05:00-05:00</updated>
   <author>
     <name>Jeff Lindsay</name>
     <email>progrium+feed@gmail.com</email>
   </author>
+  <entry>
+    <title>Consul Service Discovery with Docker</title>
+    <link rel="alternate" href="http://progrium.com/blog/2014/08/20/consul-service-discovery-with-docker/"/>
+    <id>http://progrium.com/blog/2014/08/20/consul-service-discovery-with-docker/</id>
+    <published>2014-08-20T15:05:00-05:00</published>
+    <updated>2014-08-20T16:06:54-05:00</updated>
+    <author>
+      <name>Jeff Lindsay</name>
+    </author>
+    <content type="html">&lt;p&gt;&lt;a href="http://www.consul.io/"&gt;Consul&lt;/a&gt; is a powerful tool for building distributed systems. There are a handful of alternatives in this space, but Consul is the only one that really tries to provide a comprehensive solution for service discovery. As my &lt;a href="/blog/2014/07/29/understanding-modern-service-discovery-with-docker/"&gt;last post&lt;/a&gt; points out, service discovery is a little more than what Consul can provide us, but it is probably the biggest piece of the puzzle. &lt;/p&gt;
+
+&lt;h2 id="understanding-consul-and-the-config-store"&gt;Understanding Consul and the "Config Store"&lt;/h2&gt;
+
+&lt;p&gt;The heart of Consul is a particular class of distributed datastore with properties that make it ideal for cluster configuration and coordination. Some call them lock servers, but I call them "config stores" since it more accurately reflects their key-value abstraction and common use for shared configuration. &lt;/p&gt;
+
+&lt;p&gt;The father of config stores is Google's Chubby, which was never made publicly available but is described in the influential &lt;a href="http://research.google.com/archive/chubby.html"&gt;Chubby paper&lt;/a&gt;. In the open source world we have Apache Zookeeper, the mostly defunct doozerd, and in the last year, etcd and Consul.&lt;/p&gt;
+
+&lt;p&gt;These specialized datastores are defined by their use of a consensus algorithm requiring a quorum for writes and generally exposing a simple key-value store. This key-value store is highly available, fault-tolerant, and maintains strong consistency guarantees. This can be contrasted with a number of alternative clustering approaches like master-slave or two-phase commit, all with their own benefits, drawbacks, and nuances. &lt;/p&gt;
+
+&lt;p&gt;You can learn more about the challenges of designing stateful distributed systems with the online book, &lt;a href="http://book.mixu.net/distsys/single-page.html"&gt;Distributed systems for fun and profit&lt;/a&gt;. This image from the book summarizes where the quorum approach stands compared to others:&lt;/p&gt;
+
+&lt;p style="text-align: center;"&gt;&lt;img src="/images/content/embassy/google-transact09.png" title="Diagram borrowed with love from Distributed systems for fun and profit" /&gt;&lt;/p&gt;
+
+&lt;p&gt;Quorum datastores such as our config stores seem to have many ideal properties &lt;em&gt;except&lt;/em&gt; for performance. As a result, they're generally used as low-throughput coordinators for the rest of the system. You don't use them as your application database, but you might use them to coordinate replacing a failed database master.&lt;/p&gt;
+
+&lt;p&gt;Another common property of config stores is they all have mechanisms to watch for key-value changes in real-time. This feature is central in enabling use-cases such as electing masters, resource locking, and service presence. &lt;/p&gt;
+
+&lt;h2 id="along-comes-consul"&gt;Along comes Consul&lt;/h2&gt;
+
+&lt;p&gt;Since Zookeeper came out, the subsequent config stores have been trying to simplify. Both in terms of user interface, ease of operation, and implementation of the consensus algorithms. However, they're all based on this very expressive, but lowest common denominator abstraction of a key-value store. &lt;/p&gt;
+
+&lt;p&gt;Consul is the first to build on top of this abstraction by also providing specific APIs around the semantics of common config store functions, namely service discovery and locking. It also does it in a way that's very thoughtful about those particular domains. &lt;/p&gt;
+
+&lt;p&gt;For example, a directory of services without service health is actually not a very useful one. This is why Consul also provides monitoring capabilities. Consul monitoring is comparable, and even compatible, with Nagios health checks. What's more, Consul's agent model makes it more scalable than centralized monitoring systems like Nagios.&lt;/p&gt;
+
+&lt;p style="text-align: center;"&gt;&lt;img src="/images/content/embassy/consul_layers.png" /&gt;&lt;/p&gt;
+
+&lt;p&gt;A good way to think of Consul is broken into 3 layers. The middle layer is the actual config store, which is not that different from etcd or Zookeeper. The layers above and below are pretty unique to Consul. 
+Before Consul, HashiCorp developed a host node coordinator called Serf. It uses an efficient gossip protocol to connect a set of hosts into a cluster. The cluster is aware of its members and shares an event bus. This is primarily used to know when hosts come and go from the cluster, such as during a host failure. But in Serf the event bus was also exposed for custom events to trigger user actions on the hosts.&lt;/p&gt;
+
+&lt;p&gt;Consul leverages Serf as a foundational layer to help maintain its cluster. For the most part, it's more of an implementation detail. However, I believe in an upcoming version of Consul, the Serf event bus will also be exposed in the Consul API. &lt;/p&gt;
+
+&lt;p&gt;The key-value store in Consul is very similar to etcd. It shares the same semantics and basic HTTP API, but differs in subtle ways. For example, the API for reading values lets you optionally pick a consistency mode. This is great not just because it gives users a choice, but it documents the realities of different consistency levels. This transparency educates the user about the nuances of Consul's replication model.&lt;/p&gt;
+
+&lt;p&gt;On top of the key-value store are some other great features and APIs, including locks and leader election, which are pretty standard for what people originally called lock servers. Consul is also datacenter aware, so if you're running multiple clusters, it will let you federate clusters. Nothing complicated, but it's great to have built-in since spanning multiple datacenters is very common today.&lt;/p&gt;
+
+&lt;p&gt;However, the killer feature of Consul is its service catalog. Instead of using the key-value store to arbitrarily model your service directory as you would with etcd or Zookeeper, Consul exposes a specific API for managing services. Explicitly modeling services allows it to provide more value in two main ways: monitoring and DNS.&lt;/p&gt;
+
+&lt;h2 id="built-in-monitoring-system"&gt;Built-in Monitoring System&lt;/h2&gt;
+
+&lt;p&gt;Monitoring is normally discussed independent of service discovery, but it turns out to be highly related. Over the years, we've gotten better at understanding the importance of monitoring service health in relation to service discovery. &lt;/p&gt;
+
+&lt;p&gt;With Zookeeper, a common pattern for service presence, or liveness, was to have the service register an "ephemeral node" value announcing its address. As an ephemeral node, the value would exist as long as the service's TCP session with Zookeeper remained active. This seemed like a rather elegant solution to service presence. If the service died, the connection would be lost and the service listing would be dropped. &lt;/p&gt;
+
+&lt;p&gt;In the development of doozerd, the authors avoided this functionality, both for the sake of simplicity and that they believed it encouraged bad practice. The problem with relying on a TCP connection for service health is that it doesn't exactly mean the service is healthy. For example, if the TCP connection was going through a transparent proxy that accidentally kept the connection alive, the service could die and the ephemeral node may continue to exist. &lt;/p&gt;
+
+&lt;p&gt;Instead, they implemented values with an optional TTL. This allowed for the pattern of actively updating the value if the service was healthy. TTL semantics are also used in etcd, allowing the same active heartbeat pattern. Consul supports TTL as well, but primarily focuses on more robust liveness mechanisms. In the discovery layer I helped design for Flynn, our client library lets you register your service and it will automatically heartbeat for you behind the scenes. &lt;/p&gt;
+
+&lt;p&gt;This is generally effective for service presence, but it might not take the lesson to heart. Blake Mizerany, the co-author of doozerd and now maintainer of etcd, will stress the importance of &lt;em&gt;meaningful&lt;/em&gt; liveness checks. In other words, there is no one-size-fits-all. Every service performs a different function and without testing that specific functionality, we don't actually know that it's working properly. Generic heartbeats can let us know if the process is running, but not that it's behaving correctly enough to safely accept connections.&lt;/p&gt;
+
+&lt;p&gt;Specialized health checks are exactly what monitoring systems give us, and Consul gives us a distributed monitoring system. Then it lets us choose if we want to want to associate a check with a service, while also supporting the simpler TTL heartbeat model as an alternative. Either way, if a service is detected as not healthy, it's hidden from queries for active services.&lt;/p&gt;
+
+&lt;h2 id="built-in-dns-server"&gt;Built-in DNS Server&lt;/h2&gt;
+
+&lt;p&gt;In my last post, I mentioned how DNS is not a sufficient technology for service discovery. I was very hesitant in accepting the value of a DNS interface to services in Consul. As I described before, all our environments are set up to use DNS for resolving names to IPs, not IPs with ports. So other than identifying the IPs of hosts in the cluster, the DNS interface at first glance seems to provide limited value, if any, for our concept of service discovery. &lt;/p&gt;
+
+&lt;p&gt;However, it does serve SRV records for services, and this is huge. Built-in DNS resolvers in our environments don't lookup SRV records, however, the library support to do SRV lookups ourselves is about as ubiquitous as HTTP. This took me a while to realize. It means we all have a client, even more lightweight than HTTP, and it's made &lt;em&gt;specifically&lt;/em&gt; for looking up a service. &lt;/p&gt;
+
+&lt;p&gt;To me this makes SRV the best standard API for simple service discovery lookups. I hope more service discovery systems implement it.&lt;/p&gt;
+
+&lt;p&gt;In a later post in this series, we build on SRV records from Consul DNS to generically solve service inter-connections in Docker clusters. I don't think I would have realized any of this if Consul didn't provide a built-in DNS server. &lt;/p&gt;
+
+&lt;h2 id="consul-and-the-ecosystem"&gt;Consul and the Ecosystem&lt;/h2&gt;
+
+&lt;p&gt;Consul development is very active. In the past few months, they've had several significant releases, although it's still pre-1.0. Etcd is also actively being developed, though currently from the inside out, focusing on a re-design of their Raft implementation. The two projects are similar in many ways, but also very different. I hope they learn and influence each other, perhaps even share some code since they're both written in Go. At this point, though, Consul is ahead as a comprehensive service discovery primitive. &lt;/p&gt;
+
+&lt;p&gt;Unfortunately, Consul is much less popular in the Docker world. Perhaps this is just due to less of a focus on containers at HashiCorp, which is contrasted by the heavily container-oriented mindset of the etcd maintainers at CoreOS. &lt;/p&gt;
+
+&lt;p&gt;I've been trying hard to help bridge the Docker and Consul world by building a solid Consul container for Docker. I try to design containers to be self-contained, runtime-configurable appliances as much as possible. It was not hard to do this with Consul, which is now available on &lt;a href="https://github.com/progrium/docker-consul"&gt;Github&lt;/a&gt; or &lt;a href="https://registry.hub.docker.com/u/progrium/consul/"&gt;Docker Hub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id="running-consul-in-docker"&gt;Running Consul in Docker&lt;/h2&gt;
+
+&lt;p&gt;Running a Consul node in Docker for a production cluster can be a bit tricky. This is due to the amount of configuration that the container itself needs for Consul to work. For example, here's how you might start one node using Docker (one command over several lines for readability):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ docker run --name consul -h $HOSTNAME  \
+    -p 10.0.1.1:8300:8300 \
+    -p 10.0.1.1:8301:8301 \
+    -p 10.0.1.1:8301:8301/udp \
+    -p 10.0.1.1:8302:8302 \
+    -p 10.0.1.1:8302:8302/udp \
+    -p 10.0.1.1:8400:8400 \
+    -p 10.0.1.1:8500:8500 \
+    -p 172.17.42.1:53:53/udp \
+    -d -v /mnt:/data \
+    progrium/consul -server -advertise 10.0.1.1 -join 10.0.1.2
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The Consul container I built comes with a helper command letting you simply run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class="highlight plaintext"&gt;$ $(docker run progrium/consul cmd:run 10.0.1.1::10.0.1.2 -d -v /mnt:/data)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is just a special command to generate a full Docker run command like the first one, hence wrapping it in a subshell. It's not required, but a helpful convenience to hopefully get people started with Consul in Docker much quicker. &lt;/p&gt;
+
+&lt;p&gt;One of the neat ways Consul and Docker can work together is by giving Consul as a DNS server to Docker. This transparently runs DNS resolution in containers through Consul. If you set this up at the Docker daemon level, you can also specify DNS search domains. That means the &lt;code&gt;.services.consul&lt;/code&gt; can be dropped, allowing containers to resolve records with just the service name. &lt;/p&gt;
+
+&lt;p&gt;The project README has some pretty helpful getting started instructions as well as more detail on all these features. Here's a quick video showing how easy it is to get a Consul cluster up and running inside Docker, including the above DNS trick.&lt;/p&gt;
+
+&lt;p style="text-align: center;"&gt;&lt;iframe src="//player.vimeo.com/video/103943481" width="640" height="360" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""&gt;&lt;/iframe&gt;&lt;/p&gt;
+
+&lt;h2 id="onward"&gt;Onward…&lt;/h2&gt;
+
+&lt;p&gt;Once you have Consul running in Docker, you're &lt;em&gt;close&lt;/em&gt; to having great service discovery, but as I mentioned in my last post, you're still missing those second two legs. Stay tuned for the next post on automatically registering containerized services with Consul.&lt;/p&gt;
+
+</content>
+  </entry>
   <entry>
     <title>Understanding Modern Service Discovery with Docker</title>
     <link rel="alternate" href="http://progrium.com/blog/2014/07/29/understanding-modern-service-discovery-with-docker/"/>
@@ -282,47 +398,6 @@ Flynn is both a whole and many parts, depending on what is most useful for you. 
 &lt;p&gt;You can read more on the &lt;a href="http://progrium.viewdocs.io/viewdocs"&gt;homepage for Viewdocs&lt;/a&gt;, which is powered by Viewdocs. Or here's a quick video introduction:&lt;/p&gt;
 
 &lt;iframe src="http://player.vimeo.com/video/79066808" width="700" height="394" frameborder="0" webkitallowfullscreen="webkitAllowFullScreen" mozallowfullscreen="mozallowfullscreen" allowfullscreen="allowFullScreen"&gt;No iFrames?&lt;/iframe&gt;
-</content>
-  </entry>
-  <entry>
-    <title>Hacker Dojo: Community Trading Zone</title>
-    <link rel="alternate" href="http://progrium.com/blog/2013/08/18/hacker-dojo-community-trading-zone/"/>
-    <id>http://progrium.com/blog/2013/08/18/hacker-dojo-community-trading-zone/</id>
-    <published>2013-08-17T19:00:00-05:00</published>
-    <updated>2014-06-24T15:41:44-05:00</updated>
-    <author>
-      <name>Jeff Lindsay</name>
-    </author>
-    <content type="html">&lt;p&gt;I recently came out of a Hacker Dojo board meeting, as I do every month, but this time with a renewed sense of excitement for Hacker Dojo. We began with the usual board meeting stuff — finances, staff benefits, etc — but there was one final item to discuss that's more in tune with the reason I'm even on the board. There has been an increasingly pressing issue around what Hacker Dojo is. We used to know what it was and had a reasonable idea of what we always wanted it to be, but we've grown, we've learned, and our model has to adapt. This discussion led to a rethinking of the conceptual structure of Hacker Dojo.&lt;/p&gt;
-
-&lt;p&gt;One of the reasons this came up is growth. We've had consistent membership growth with only a couple expected downturns, due to various setbacks. For example, when we were temporarily limited to a maximum occupancy of 49 people, membership dropped because people couldn't throw the same events as before. Despite setbacks, we've had impressive long-term growth. If you describe us as a "hackerspace," we are the largest in the United Sates, and I believe one of the largest in the world. It's clear that overall we're doing quite well, but we want to take it further. We want to keep pushing because Hacker Dojo means a lot to all of us and we want to see it, and the culture and ideals that go with it, reach new people and new places. &lt;/p&gt;
-
-&lt;p&gt;We've always talked about franchising and starting new locations, but we've learned that a single, 24/7 location with 400 members and around 2,000 people coming through every month is quite difficult to run, especially as a bootstrapped non-profit with minimal staff. We've had sponsorships, but we work hard for those sponsorships and provide services to receive them. Most of our income comes from membership fees. Despite all this we're trying our best to continue to take Hacker Dojo to the next level, and it should be noted we have been quite successful so far, for many reasons that could go into another long blog post.&lt;/p&gt;
-
-&lt;p&gt;Scaling any organization is hard. Scaling an organization like this one can be extra difficult, especially when we're trying to maintain the grassroots, bottom-up, culture that started it. We've always tried to support the concept of a democratic organization. For the first few years we were 100% volunteer run, with no paid employees. The growth of Hacker Dojo has generated lot of extra work to get done that nobody really wants to do. Raising money, working with the city, organizing contractors, dealing with financial issues, having to move to a new location and rent the previous one … all this requires a LOT of leg work and consistent attention that just wasn't happening with volunteers. &lt;/p&gt;
-
-&lt;p&gt;Eventually, you need to start hiring full or part-time people. We now have a small staff of paid employees who tackle these more time-intensive tasks. While this has helped us manage the growth, it has created a kind of interesting tension between the forces of the democratic, bottom-up nature of our organization and the forces of more traditional, more centralized modes of operation necessary for efficient execution of a vision. The vision being in the short-term to improve the quality of the experience at Hacker Dojo, and in the long-term to bring Hacker Dojo and all that it stands for — what some have called the epitome of true Silicon Valley culture — to more people. &lt;/p&gt;
-
-&lt;p&gt;This tension has been healthy and has helped Hacker Dojo often reap the benefits of both worlds. However, as we grow, so does the tension and discussion around it. This was the catalyst for our discussion at the board meeting. Now the realization I'm excited about is somewhat of an aside from this issue of tension, but the issue was the catalyst for revisiting what Hacker Dojo is. I quite enjoy the occasional existential crisis as it often results in refreshed sense of purpose and meaning. &lt;/p&gt;
-
-&lt;p&gt;We revisited many ideas, for example that Hacker Dojo is a platform, and like many platforms it can be hard to describe. We serve purposes in the worlds of education, business, social, and many others. We'd talked about how Hacker Dojo has played a part in not just projects and startups, but relationships — partnerships, friendships, and even marriages. We considered different organizations for analogy: universities, incubators, fraternities, and anything else that comes close to an existing framework for all the amazingness that Hacker Dojo produces. &lt;/p&gt;
-
-&lt;p&gt;Then it hit us. Communities. Plural. &lt;/p&gt;
-
-&lt;p&gt;What we realized is that we've effectively been treating Hacker Dojo as one community. We've sort of acknowledged that there are sub-groups within Hacker Dojo, but we've more or less operated under the assumption that we serve two types of citizens: members and the general public. As we've gotten larger, it's become much more difficult to effectively treat either of those as one group. The reality is that they are all actually part of many communities. &lt;/p&gt;
-
-&lt;p&gt;The idea was right under our nose the whole time, just under a different guise. Events have always been a core part of Hacker Dojo because Hacker Dojo started with the idea that it could be a place where people could meet and host events like the event that inspired Hacker Dojo itself, SuperHappyDevHouse. When an event happens on a regular basis it turns into a community. A group of people with a common interest and/or set of values come together, turn into a community, and these communities grow, develop, and spawn really interesting things, just as SuperHappyDevHouse spawned Hacker Dojo. &lt;/p&gt;
-
-&lt;p&gt;Hacker Dojo now serves many communities both inside and outside of Hacker Dojo; not only internal communities but external ones as well. External communities can also leverage the infrastructure that Hacker Dojo provides. These communities might already have a member of Hacker Dojo, or someone in the community chooses to become a member of Hacker Dojo, usually to throw an event. Once that community gets into Hacker Dojo, they not only see Hacker Dojo, but all the other communities that come together under our roof. Sometimes this inspires even more people to sign up as members, not just to be a part of Hacker Dojo, but to participate in and see what other communities Hacker Dojo offers.&lt;/p&gt;
-
-&lt;p&gt;We're now thinking of Hacker Dojo not just as a community hub, but as a hub of communities. A community &lt;a href="http://en.wikipedia.org/wiki/Trading_zones"&gt;trading zone&lt;/a&gt;, if you will. While we will always support and listen to individual members, we should begin to think of communities, in the plural, as first-class citizens of Hacker Dojo. This may seem like a subtle change but it is a big difference. It means acknowledging and supporting the communities that operate in and around Hacker Dojo. It means going to those communities and asking how we can better serve &lt;em&gt;them as a community&lt;/em&gt;, not just individual members.&lt;/p&gt;
-
-&lt;p&gt;By connecting with communities we can provide infrastructure to foster their growth and development. Imagine going to the Hacker Dojo website and seeing a page devoted to the many communities of Hacker Dojo. When a new member signs up they could indicate their interests and we could provide them with a list of communities they might be interested in. Hacker Dojo would in a sense then be improving the communities' "deal flow."&lt;/p&gt;
-
-&lt;p&gt;Rethinking Hacker Dojo as infrastructure for communities has led to lots of exciting new ideas. By focusing on empowering them with infrastructure that allows them to flourish, we are then supporting our members in a more meaningful way. &lt;/p&gt;
-
-&lt;p&gt;I'm hoping this simple change in the way the board and members invested in Hacker Dojo think about Hacker Dojo will hopefully lead to lots of positive change. We don't have these conversations very often on the board but we need to have them to maintain the vision of Hacker Dojo and we need to have them in public. Clearly this is a collaborative effort, so we want to know how the general community feels about this idea. So I'm putting this out there, and hopefully it will lead to more exciting discussions.&lt;/p&gt;
-
 </content>
   </entry>
 </feed>
